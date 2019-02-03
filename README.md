@@ -1,6 +1,6 @@
-# FastDMM
+# QwertyDMM
 
-FastDMM is an alternative map editor for BYOND that is designed to be more flexible.
+QwertyDMM is a fork of FastDMM, an alternative map editor for BYOND that is designed to be more flexible.
 
 # Features
 
@@ -15,20 +15,20 @@ FastDMM is an alternative map editor for BYOND that is designed to be more flexi
 
 # Requirements
 
-- FastDMM requires Java 8 to be installed.
+- QwertyDMM requires Java 8 to be installed.
 
 # Usage
 
-- Download the latest FastDMM version from the releases page, or compile it yourself.
-- Run `FastDMM.jar`
+- Download the latest QwertyDMM version from the releases page, or compile it yourself.
+- Run `QwertyDMM.jar`
 - Use the `Open DME` option to open an environment file.
 - Upon completion, use the `Open` option to select the desired map from the list.
 - Use middle mouse button or alt click and drag to move your view and scroll wheel to zoom in/out.
 - If you select an object and hold down control and click on a tile, and while holding your mouse button down, you move your mouse in a direction, you can specify a direction for the var.
 
-# Building FastDMM.
+# Building QwertyDMM.
 
-FastDMM uses [Gradle](https://docs.gradle.org/current/userguide/userguide.html) for its dependency management!
+QwertyDMM uses [Gradle](https://docs.gradle.org/current/userguide/userguide.html) for its dependency management!
 
 The project uses the `us.kirchmeier.capsule` plugin for packing the source and dependencies into a fully runnable JAR. Use this to generate a jar, which will reside in /build/libs:
 
@@ -46,10 +46,8 @@ gradlew run
 
 Credits and thanks to original authors and contributors:
 
-[monster860](https://github.com/monster860) for creating FastDMM, the alternative map editor for BYOND.
-
-[factorsofx](https://github.com/factorsofx), [Quantomicus](https://github.com/Quantomicus), [Chnkr](https://github.com/Chnkr), [PJB3005](https://github.com/PJB3005), [Cruix](https://github.com/Cruix), [hecksadecimal](https://github.com/hecksadecimal) for contributing to FastDMM before tgstation
+[monster860](https://github.com/monster860) for originally creating FastDMM, the alternative map editor for BYOND.
 
 # License
 
-FastDMM is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html), with some exceptions which are marked as such.
+QwertyDMM is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html), with some exceptions which are marked as such.
