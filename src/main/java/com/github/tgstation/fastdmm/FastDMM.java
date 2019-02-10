@@ -869,10 +869,10 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				viewportZoom *= 2;
 			else if (dwheel < 0)
 				viewportZoom /= 2;
-			if (viewportZoom < 8)
-				viewportZoom = 8;
-			if (viewportZoom > 128)
-				viewportZoom = 128;
+			if (viewportZoom < 4)
+				viewportZoom = 4;
+			if (viewportZoom > 256)
+				viewportZoom = 256;
 		}
 
 		KeyboardAdapter.updateKeys();
@@ -1125,8 +1125,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 									dirs |= cdir;
 									continue;
 								}
-								if (!instance.getArea().equals(instance2.getArea())) {
-									dirs |= cdir;
+								try {
+									if (!instance.getArea().equals(instance2.getArea())) {
+										dirs |= cdir;
+									}
+								} catch(NullPointerException e) {
+									
 								}
 							}
 							if (dirs != 0) {
