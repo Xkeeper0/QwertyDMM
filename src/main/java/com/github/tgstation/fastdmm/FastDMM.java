@@ -878,15 +878,14 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		KeyboardAdapter.updateKeys();
 
 		boolean undo = KeyboardAdapter.isKeyPressed(Keyboard.KEY_Z);
-		boolean redo = KeyboardAdapter.isKeyPressed(Keyboard.KEY_R) || KeyboardAdapter.isKeyPressed(Keyboard.KEY_Y);
-
+		
 		isCtrlPressed = KeyboardAdapter.isKeyDown(Keyboard.KEY_LCONTROL)
 				|| KeyboardAdapter.isKeyDown(Keyboard.KEY_RCONTROL);
 		isShiftPressed = KeyboardAdapter.isKeyDown(Keyboard.KEY_LSHIFT)
 				|| KeyboardAdapter.isKeyDown(Keyboard.KEY_RSHIFT);
 		isAltPressed = KeyboardAdapter.isKeyDown(Keyboard.KEY_LMENU) || KeyboardAdapter.isKeyDown(Keyboard.KEY_RMENU);
 
-		if (redo && isCtrlPressed) {
+		if (undo && isCtrlPressed && isShiftPressed) {
 			ActionEvent ae = new ActionEvent(this, 1, "redo");
 			actionPerformed(ae);
 		} else if (undo && isCtrlPressed) {
