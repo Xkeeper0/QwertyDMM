@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.github.tgstation.fastdmm.constant.constants;
 import com.github.tgstation.fastdmm.dmirender.DMI;
 import com.github.tgstation.fastdmm.dmirender.IconState;
 import com.github.tgstation.fastdmm.dmirender.IconSubstate;
@@ -963,6 +964,16 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 								item.addActionListener(new DeleteListener(this, l, i));
 								menu.add(item);
 
+								
+								JMenu setDirMenu = new JMenu("Set Direction");
+								menu.add(setDirMenu);
+								
+								for (int j=0; j<constants.DIRECTIONS.length; j++) {
+									item = new JMenuItem(constants.DIRECTION_NAMES[j]);
+									item.addActionListener(new SetDirListener(this, l, i, constants.DIRECTIONS[j]));
+									setDirMenu.add(item);
+								}
+								
 								item = new JMenuItem("View Variables");
 								item.addActionListener(new EditVarsListener(this, l, i));
 								menu.add(item);
