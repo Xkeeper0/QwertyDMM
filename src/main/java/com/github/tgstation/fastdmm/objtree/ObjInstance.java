@@ -50,9 +50,13 @@ public abstract class ObjInstance {
 
 	public int getDir() {
 		if(cachedDir == -1) {
-			try {
-				cachedDir = Integer.parseInt(getVar("dir"));
-			} catch (NumberFormatException e) {
+			if (getVar("dir") != null) {
+				try {
+					cachedDir = Integer.parseInt(getVar("dir"));
+				} catch (NumberFormatException e) {
+					cachedDir = 2;
+				}
+			} else {
 				cachedDir = 2;
 			}
 		}
@@ -61,9 +65,13 @@ public abstract class ObjInstance {
 	
 	public int getPixelX() {
 		if(cachedPixelX == -1234) {
-			try {
-				cachedPixelX = Integer.parseInt(getVar("pixel_x"));
-			} catch (NumberFormatException e) {
+			if (getVar("pixel_x") != null) {
+				try {
+					cachedPixelX = Integer.parseInt(getVar("pixel_x"));
+				} catch (NumberFormatException e) {
+					cachedPixelX = 2;
+				}
+			} else {
 				cachedPixelX = 2;
 			}
 		}
@@ -72,9 +80,13 @@ public abstract class ObjInstance {
 	
 	public int getPixelY() {
 		if(cachedPixelY == -1234) {
-			try {
-				cachedPixelY = Integer.parseInt(getVar("pixel_y"));
-			} catch (NumberFormatException e) {
+			if (getVar("pixel_y") != null) {
+				try {
+					cachedPixelY = Integer.parseInt(getVar("pixel_y"));
+				} catch (NumberFormatException e) {
+					cachedPixelY = 2;
+				}
+			} else {
 				cachedPixelY = 2;
 			}
 		}
@@ -83,9 +95,13 @@ public abstract class ObjInstance {
 	
 	public float getLayer() {
 		if(cachedLayer == -1234) {
-			try {
-				cachedLayer = Float.parseFloat(getVar("layer"));
-			} catch (NumberFormatException e) {
+			if (getVar("layer") != null) {
+				try {
+					cachedLayer = Float.parseFloat(getVar("layer"));
+				} catch (NumberFormatException e) {
+					cachedLayer = 2;
+				}
+			} else {
 				cachedLayer = 2;
 			}
 		}
@@ -95,6 +111,10 @@ public abstract class ObjInstance {
 	public Color getColor() {
 		if(cachedColor == null) {
 			String var = getVar("color");
+			
+			if (var == null)
+				return cachedColor = new Color(255,255,255);
+			
 			Matcher m = Pattern.compile("(#[\\d\\w][\\d\\w][\\d\\w][\\d\\w][\\d\\w][\\d\\w])").matcher(var);
 			if(m.find())
 				return cachedColor = Color.decode(m.group(1));
@@ -164,7 +184,7 @@ public abstract class ObjInstance {
 	}
 	
 	public int getPlane() {
-		if(cachedPlane == -1234) {
+		if(cachedPlane == -1234 && getVar("plane") != null) {
 			try {
 				cachedPlane = Integer.parseInt(getVar("plane"));
 			} catch (NumberFormatException e) {
