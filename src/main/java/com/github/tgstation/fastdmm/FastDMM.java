@@ -95,6 +95,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JMenuBar menuBar;
 	private JMenu menuRecent;
 	private JMenu menuRecentMaps;
+	
+
 	private JMenuItem menuItemNew;
 	private JMenuItem menuItemOpen;
 	private JMenuItem menuItemSave;
@@ -103,9 +105,20 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JMenuItem menuItemExit;
 	private JMenuItem menuItemUndo;
 	private JMenuItem menuItemRedo;
+	private JMenuItem menuItemOpenDME;
+	private JMenuItem menuItemChangeFilters;
+	private JMenuItem menuItemDefaultPlacement;
+	private JMenuItem menuItemSelect;
+	private JMenuItem menuItemDelete;
 
 	private JCheckBoxMenuItem menuItemAutoSave;
-
+	private JCheckBoxMenuItem menuItemPlayAnimations;
+	
+	
+	private JMenu fileMenu;
+	private JMenu editMenu;
+	private JMenu optionsMenu;
+	
 	private JPopupMenu currPopup;
 	
 	private PrintStream outputStream;
@@ -283,107 +296,113 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 			menuBar = new JMenuBar();
 
-			JMenu menu = new JMenu("File");
-			menu.setMnemonic(KeyEvent.VK_O);
-			menu.getPopupMenu().setLightWeightPopupEnabled(false);
-			menuBar.add(menu);
+			fileMenu = new JMenu("File");
+			fileMenu.setMnemonic(KeyEvent.VK_O);
+			fileMenu.getPopupMenu().setLightWeightPopupEnabled(false);
+			menuBar.add(fileMenu);
 
 			menuItemNew = new JMenuItem("New");
 			menuItemNew.setActionCommand("new");
 			menuItemNew.addActionListener(FastDMM.this);
 			menuItemNew.setEnabled(false);
-			menu.add(menuItemNew);
+			fileMenu.add(menuItemNew);
 
 			menuItemOpen = new JMenuItem("Open");
 			menuItemOpen.setActionCommand("open");
 			menuItemOpen.addActionListener(FastDMM.this);
 			menuItemOpen.setEnabled(false);
-			menu.add(menuItemOpen);
+			fileMenu.add(menuItemOpen);
 
 			menuRecentMaps = new JMenu("Recent Maps");
 			menuRecentMaps.setMnemonic(KeyEvent.VK_O);
 			menuRecentMaps.getPopupMenu().setLightWeightPopupEnabled(false);
 			menuRecentMaps.setVisible(false);
 			menuRecentMaps.setEnabled(false);
-			menu.add(menuRecentMaps);
+			fileMenu.add(menuRecentMaps);
 
 			menuItemSave = new JMenuItem("Save");
 			menuItemSave.setActionCommand("save");
 			menuItemSave.addActionListener(FastDMM.this);
 			menuItemSave.setEnabled(false);
-			menu.add(menuItemSave);
+			fileMenu.add(menuItemSave);
 
-			JMenuItem menuItem = new JMenuItem("Open DME");
-			menuItem.setActionCommand("open_dme");
-			menuItem.addActionListener(FastDMM.this);
-			menu.add(menuItem);
+			menuItemOpenDME = new JMenuItem("Open DME");
+			menuItemOpenDME.setActionCommand("open_dme");
+			menuItemOpenDME.addActionListener(FastDMM.this);
+			fileMenu.add(menuItemOpenDME);
 
 			menuRecent = new JMenu("Recent Environments");
 			menuRecent.setMnemonic(KeyEvent.VK_O);
 			menuRecent.getPopupMenu().setLightWeightPopupEnabled(false);
-			menu.add(menuRecent);
+			fileMenu.add(menuRecent);
 
-			menu.addSeparator();
+			fileMenu.addSeparator();
 
 			menuItemMapImage = new JMenuItem("Create map image");
 			menuItemMapImage.setActionCommand("mapimage");
 			menuItemMapImage.addActionListener(FastDMM.this);
 			menuItemMapImage.setEnabled(false);
-			menu.add(menuItemMapImage);
+			fileMenu.add(menuItemMapImage);
 			
-			menu.addSeparator();
+			fileMenu.addSeparator();
 			
 			menuItemExit = new JMenuItem("Exit");
 			menuItemExit.setActionCommand("exit");
 			menuItemExit.addActionListener(FastDMM.this);
-			menu.add(menuItemExit);
+			fileMenu.add(menuItemExit);
 
 			initRecent("dme");
 			initOptions();
 
-			menu = new JMenu("Edit");
-			menuBar.add(menu);
+			editMenu = new JMenu("Edit");
+			menuBar.add(editMenu);
 
 			menuItemUndo = new JMenuItem("Undo", KeyEvent.VK_U);
 			menuItemUndo.setActionCommand("undo");
 			menuItemUndo.addActionListener(FastDMM.this);
 			menuItemUndo.setEnabled(false);
-			menu.add(menuItemUndo);
+			editMenu.add(menuItemUndo);
 
 			menuItemRedo = new JMenuItem("Redo", KeyEvent.VK_R);
 			menuItemRedo.setActionCommand("redo");
 			menuItemRedo.addActionListener(FastDMM.this);
 			menuItemRedo.setEnabled(false);
-			menu.add(menuItemRedo);
+			editMenu.add(menuItemRedo);
 
-			menu = new JMenu("Options");
-			menu.setMnemonic(KeyEvent.VK_O);
-			menuBar.add(menu);
+			optionsMenu = new JMenu("Options");
+			optionsMenu.setMnemonic(KeyEvent.VK_O);
+			menuBar.add(optionsMenu);
 
-			menuItem = new JMenuItem("Change Filters", KeyEvent.VK_F);
-			menuItem.setActionCommand("change_filters");
-			menuItem.addActionListener(FastDMM.this);
-			menu.add(menuItem);
+			menuItemChangeFilters = new JMenuItem("Change Filters", KeyEvent.VK_F);
+			menuItemChangeFilters.setActionCommand("change_filters");
+			menuItemChangeFilters.addActionListener(FastDMM.this);
+			optionsMenu.add(menuItemChangeFilters);
 
-			menuItemAutoSave = new JCheckBoxMenuItem("AutoSave", options.autoSave);
+			menuItemAutoSave = new JCheckBoxMenuItem("Auto Save", options.autoSave);
 			menuItemAutoSave.setActionCommand("autoSaveToggle");
 			menuItemAutoSave.addActionListener(FastDMM.this);
 			menuItemAutoSave.setSelected(options.autoSave);
+			optionsMenu.add(menuItemAutoSave);
 
-			menu.add(menuItemAutoSave);
+			menuItemPlayAnimations = new JCheckBoxMenuItem("Play Animations", options.playAnimations);
+			menuItemPlayAnimations.setActionCommand("playAnimationsToggle");
+			menuItemPlayAnimations.addActionListener(FastDMM.this);
+			menuItemPlayAnimations.setSelected(options.playAnimations);
+			optionsMenu.add(menuItemPlayAnimations);
+			
 
 			menuItemExpand = new JMenuItem("Expand Map");
 			menuItemExpand.setActionCommand("expand");
 			menuItemExpand.addActionListener(FastDMM.this);
 			menuItemExpand.setEnabled(false);
-			menu.add(menuItemExpand);
+			optionsMenu.add(menuItemExpand);
 
-			menu.addSeparator();
+			optionsMenu.addSeparator();
 
 			ButtonGroup placementGroup = new ButtonGroup();
 
-			menuItem = new JRadioButtonMenuItem("Default Placement", true);
-			menuItem.addItemListener(e -> { // I know this is ugly, but what can
+			menuItemDefaultPlacement = new JRadioButtonMenuItem("Default Placement", true);
+			menuItemDefaultPlacement.addItemListener(e -> { // I know this is ugly, but what can
 											// you do
 				statusstring = "Default Placement Mode ";
 				if (dme == null || dmm == null) {
@@ -392,25 +411,25 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				selection.setText(statusstring);
 				selMode = false;
 			});
-			menuItem.addActionListener(new PlacementModeListener(this, placementMode = new DefaultPlacementMode()));
-			placementGroup.add(menuItem);
-			menu.add(menuItem);
+			menuItemDefaultPlacement.addActionListener(new PlacementModeListener(this, placementMode = new DefaultPlacementMode()));
+			placementGroup.add(menuItemDefaultPlacement);
+			optionsMenu.add(menuItemDefaultPlacement);
 
-			menuItem = new JRadioButtonMenuItem("Select", false);
-			menuItem.addActionListener(new PlacementModeListener(this, new SelectPlacementMode()));
-			menuItem.addItemListener(e -> {
+			menuItemSelect = new JRadioButtonMenuItem("Select", false);
+			menuItemSelect.addActionListener(new PlacementModeListener(this, new SelectPlacementMode()));
+			menuItemSelect.addItemListener(e -> {
 				selMode = true;
 			});
-			placementGroup.add(menuItem);
-			menu.add(menuItem);
+			placementGroup.add(menuItemSelect);
+			optionsMenu.add(menuItemSelect);
 
-			menuItem = new JRadioButtonMenuItem("Delete", false);
-			menuItem.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
-			menuItem.addItemListener(e -> {
+			menuItemDelete = new JRadioButtonMenuItem("Delete", false);
+			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
+			menuItemDelete.addItemListener(e -> {
 				selMode = false;
 			});
-			placementGroup.add(menuItem);
-			menu.add(menuItem);
+			placementGroup.add(menuItemDelete);
+			optionsMenu.add(menuItemDelete);
 
 			setJMenuBar(menuBar);
 
@@ -481,6 +500,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			openDME();
 		} else if ("autoSaveToggle".equals(e.getActionCommand())) {
 			autoSaveToggle();
+		} else if ("playAnimationsToggle".equals(e.getActionCommand())) {
+			playAnimationsToggle();
 		} else if ("open".equals(e.getActionCommand())) {
 			openDMM();
 		} else if ("save".equals(e.getActionCommand())) {
@@ -672,6 +693,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		options.saveOptions();
 	}
 
+	private void playAnimationsToggle() {
+		options.playAnimations = !options.playAnimations;
+		options.saveOptions();
+	}
+	
 	private void openDMM(File filetoopen) {
 		synchronized (this) {
 			for (DMM map : loadedMaps) {
@@ -1112,8 +1138,15 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 							if (dmi == null)
 								continue;
 							String iconState = oInstance.getIconState();
-							IconSubstate substate = dmi.getIconState(iconState).getSubstate(oInstance.getDir(), (int) currentFrame);
-
+							
+							IconSubstate substate;
+							
+							if (options.playAnimations) {
+								substate = dmi.getIconState(iconState).getSubstate(oInstance.getDir(), (int) currentFrame);
+							} else {
+								substate = dmi.getIconState(iconState).getSubstate(oInstance.getDir());
+							}
+							
 							RenderInstance ri = new RenderInstance(currCreationIndex++);
 							ri.layer = oInstance.getLayer();
 							ri.plane = oInstance.getPlane();

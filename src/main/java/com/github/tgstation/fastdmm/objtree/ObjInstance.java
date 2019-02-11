@@ -35,11 +35,15 @@ public abstract class ObjInstance {
 
 	public String getIconState() {
 		if(cachedIconState == null) {
-			Matcher m = Pattern.compile("\"(.+)\"").matcher(getVar("icon_state"));
-			if(m.find())
-				cachedIconState = m.group(1);
-			else
+			if (getVar("icon_state") != null) {
+				Matcher m = Pattern.compile("\"(.+)\"").matcher(getVar("icon_state"));
+				if(m.find())
+					cachedIconState = m.group(1);
+				else
+					cachedIconState = "";
+			} else {
 				cachedIconState = "";
+			}
 		}
 		return cachedIconState;
 	}

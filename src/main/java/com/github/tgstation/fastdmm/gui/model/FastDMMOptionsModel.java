@@ -22,6 +22,7 @@ public class FastDMMOptionsModel {
 			+ "options.json";
 	
 	public boolean autoSave = false;
+	public boolean playAnimations = true;
 	
 	//Restriction constructor to createOrLoadOptions.
 	private FastDMMOptionsModel() {	}
