@@ -129,6 +129,9 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	public boolean isAltPressed = false;
 
 	private boolean areMenusFrozen = false;
+	
+	public double currentFrame = 0;
+	public double lastNanoTime = 0;
 
 	public static final void main(String[] args) throws IOException, LWJGLException {
 		try {
@@ -1109,7 +1112,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 							if (dmi == null)
 								continue;
 							String iconState = oInstance.getIconState();
-							IconSubstate substate = dmi.getIconState(iconState).getSubstate(oInstance.getDir());
+							IconSubstate substate = dmi.getIconState(iconState).getSubstate(oInstance.getDir(), (int) currentFrame);
 
 							RenderInstance ri = new RenderInstance(currCreationIndex++);
 							ri.layer = oInstance.getLayer();
@@ -1167,6 +1170,10 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 			currCreationIndex = placementMode.visualize(rendInstanceSet, currCreationIndex);
 		}
+		
+		currentFrame += ((double) System.nanoTime()-lastNanoTime)/100000000.0f;
+		lastNanoTime = (double) System.nanoTime();
+		
 		return rendInstanceSet;
 	}
 

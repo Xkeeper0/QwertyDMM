@@ -1,19 +1,52 @@
 package com.github.tgstation.fastdmm.dmirender;
 
+import java.util.ArrayList;
+
 public class IconState {
 	public DMI dmi;
 	public String name;
 	public int dirCount = 1;
-	public 	int frameCount = 1;
+	public int frameCount = 1;
+	public int delayFrameCount = 1;
+	public boolean rewind;
+	
 	public float[] delays;
 	public IconSubstate[] substates;
-
+	
+	public ArrayList<Integer> delayedFrames;
+	
+	
 	public IconState(String name) {
 		this.name = name;
 	}
+	
+	public int getFrameFromDeciseconds(int frame) {
 
+		
+		if (delays == null || frameCount == 1) {
+			return 0;
+		}
+		
+		if (this.rewind) {
+			
+			if (frame%(delayedFrames.size()*2) < delayedFrames.size()) { //please no booli me
+				return delayedFrames.get(frame%delayedFrames.size());
+			} else {
+				return delayedFrames.get((delayedFrames.size()-1)-(frame%delayedFrames.size()));
+			}
+
+			
+		} else {
+		
+			return delayedFrames.get(frame%delayedFrames.size());
+			
+		}
+
+		
+	}
+	
 	public IconSubstate getSubstate(int dir, int frame) {
-		return substates[dirToIndex(dir) + ((frame%frameCount)*dirCount)];
+		return substates[dirToIndex(dir) + ((getFrameFromDeciseconds(frame))*dirCount)];
 	}
 	
 	public IconSubstate getSubstate(int dir) {

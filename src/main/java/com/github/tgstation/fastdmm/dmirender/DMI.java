@@ -154,13 +154,32 @@ public class DMI {
                     break;
                 case "delay":
                     String[] delayStrings = val.split(",");
+                    
+                    currState.delayedFrames = new ArrayList<Integer>();
+                    
+                    int k = 0;
+                    
                     if (delayStrings.length == currState.dirCount * currState.frameCount) {
                         currState.delays = new float[delayStrings.length];
                         for (int i = 0; i < delayStrings.length; i++) {
                             currState.delays[i] = Float.parseFloat(delayStrings[i]);
+                            
+                			for (int j=0;j<currState.delays[i];j++) {
+                				currState.delayedFrames.add(i);
+                				k++;
+                			}
+                			
                         }
                     }
+                    
+                    currState.delayFrameCount = k;
+            	
+            		
                     break;
+                
+                case "rewind":
+                	currState.rewind = Integer.parseInt(val) != 0;
+                    
             }
         }
         
