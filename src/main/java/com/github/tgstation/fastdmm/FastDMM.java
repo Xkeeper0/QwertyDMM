@@ -908,6 +908,10 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		KeyboardAdapter.updateKeys();
 
 		boolean undo = KeyboardAdapter.isKeyPressed(Keyboard.KEY_Z);
+		boolean copy = KeyboardAdapter.isKeyPressed(Keyboard.KEY_C);
+		boolean cut = KeyboardAdapter.isKeyPressed(Keyboard.KEY_X);
+		boolean paste = KeyboardAdapter.isKeyPressed(Keyboard.KEY_V);
+		
 		
 		isCtrlPressed = KeyboardAdapter.isKeyDown(Keyboard.KEY_LCONTROL)
 				|| KeyboardAdapter.isKeyDown(Keyboard.KEY_RCONTROL);
@@ -921,6 +925,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		} else if (undo && isCtrlPressed) {
 			ActionEvent ae = new ActionEvent(this, 1, "undo");
 			actionPerformed(ae);
+		} else if (paste && isCtrlPressed) {
+			
+		} else if (copy && isCtrlPressed) {
+			
+		} else if (cut && isCtrlPressed) {
+			
 		}
 
 		if (Mouse.isButtonDown(2) || (Mouse.isButtonDown(0) && isAltPressed)) {
@@ -1006,7 +1016,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 								item = new JMenuItem("View Variables");
 								item.addActionListener(new EditVarsListener(this, l, i));
 								menu.add(item);
-
+								
 								item = new JMenuItem("Move to Top");
 								item.addActionListener(new MoveToTopListener(this, l, i));
 								menu.add(item);
