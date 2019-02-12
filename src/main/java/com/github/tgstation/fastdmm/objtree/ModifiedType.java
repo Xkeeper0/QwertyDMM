@@ -152,11 +152,11 @@ public class ModifiedType extends ObjInstance {
             model.doReturnTrue = true;
             dialog.setVisible(false);
         });
-		bottomPanel.add(okButton, BorderLayout.WEST);
+		bottomPanel.add(okButton, BorderLayout.EAST);
 		
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(e -> dialog.setVisible(false));
-		bottomPanel.add(cancelButton, BorderLayout.EAST);
+		bottomPanel.add(cancelButton, BorderLayout.WEST);
 		
 		dialog.setLocationRelativeTo(editor);
 		dialog.setSize(400, 450);
