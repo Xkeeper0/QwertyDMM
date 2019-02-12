@@ -187,10 +187,12 @@ public class ObjectTree implements TreeModel {
 					Matcher m = Pattern.compile("(?<![\\d\\w\"/])\\w+(?![\\d\\w\"/])").matcher(val);
 					StringBuffer outVal = new StringBuffer();
 					while(m.find()) {
-						if(global.vars.containsKey(m.group(0)))
-							m.appendReplacement(outVal, global.vars.get(m.group(0)));
+						String g = m.group(0);
+						//g = g.replaceAll("\\$","\\\\\\$");
+						if(global.vars.containsKey(g))
+							m.appendReplacement(outVal, global.vars.get(g).replaceAll("\\$","\\\\\\$"));
 						else
-							m.appendReplacement(outVal, m.group(0));
+							m.appendReplacement(outVal, g.replaceAll("\\$","\\\\\\$"));
 					}
 					m.appendTail(outVal);
 					val = outVal.toString();

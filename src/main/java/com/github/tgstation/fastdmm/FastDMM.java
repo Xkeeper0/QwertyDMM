@@ -45,6 +45,7 @@ import com.github.tgstation.fastdmm.objtree.ObjectTree;
 import com.github.tgstation.fastdmm.objtree.ObjectTreeItem;
 import com.github.tgstation.fastdmm.objtree.ObjectTreeParser;
 
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -119,6 +120,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JMenu fileMenu;
 	private JMenu editMenu;
 	private JMenu mapMenu;
+	private JMenu modeMenu;
 	private JMenu optionsMenu;
 	
 	private JPopupMenu currPopup;
@@ -126,6 +128,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private PrintStream outputStream;
 
 	public JTree objTreeVis;
+	public JTextField objTreeFilter;
 	public JList<ObjInstance> instancesVis;
 
 	SortedSet<String> filters;
@@ -227,12 +230,22 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			instancesVis.setCellRenderer(new InstancesRenderer(FastDMM.this));
 			instancesPanel.add(new JScrollPane(instancesVis));
 
+			
+			
+			
+			
 			objTreePanel = new JPanel();
 			objTreePanel.setLayout(new BorderLayout());
 
+			
+			//objTreeFilter = new JTextField(); 
+			//objTreePanel.add(objTreeFilter, BorderLayout.NORTH);
+			
+			
 			objTreeVis = new JTree(new NoDmeTreeModel());
 			objTreeVis.addTreeSelectionListener(FastDMM.this);
 			ToolTipManager.sharedInstance().registerComponent(objTreeVis);
+			//new QuickTreeFilterField()
 			objTreeVis.setCellRenderer(new ObjectTreeRenderer(FastDMM.this));
 			objTreePanel.add(new JScrollPane(objTreeVis));
 
@@ -388,6 +401,43 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemMapImage.addActionListener(FastDMM.this);
 			menuItemMapImage.setEnabled(false);
 			mapMenu.add(menuItemMapImage);
+		
+			modeMenu = new JMenu("Mode");
+			modeMenu.setMnemonic(KeyEvent.VK_S);
+			menuBar.add(modeMenu);
+
+			ButtonGroup placementGroup = new ButtonGroup();
+
+			menuItemDefaultPlacement = new JRadioButtonMenuItem("Default Placement", true);
+			menuItemDefaultPlacement.addItemListener(e -> { // I know this is ugly, but what can
+											// you do
+				statusstring = "Default Placement Mode ";
+				if (dme == null || dmm == null) {
+					statusstring = " ";
+				}
+				selection.setText(statusstring);
+				selMode = false;
+			});
+			menuItemDefaultPlacement.addActionListener(new PlacementModeListener(this, placementMode = new DefaultPlacementMode()));
+			placementGroup.add(menuItemDefaultPlacement);
+			modeMenu.add(menuItemDefaultPlacement);
+
+			menuItemSelect = new JRadioButtonMenuItem("Select", false);
+			menuItemSelect.addActionListener(new PlacementModeListener(this, new SelectPlacementMode()));
+			menuItemSelect.addItemListener(e -> {
+				selMode = true;
+			});
+			placementGroup.add(menuItemSelect);
+			modeMenu.add(menuItemSelect);
+
+			menuItemDelete = new JRadioButtonMenuItem("Delete", false);
+			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
+			menuItemDelete.addItemListener(e -> {
+				selMode = false;
+			});
+			placementGroup.add(menuItemDelete);
+			modeMenu.add(menuItemDelete);
+
 			
 			optionsMenu = new JMenu("Options");
 			optionsMenu.setMnemonic(KeyEvent.VK_O);
@@ -420,40 +470,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemConsoleVisible.setSelected(options.consoleVisible);
 			optionsMenu.add(menuItemConsoleVisible);
 			
-
-			optionsMenu.addSeparator();
-
-			ButtonGroup placementGroup = new ButtonGroup();
-
-			menuItemDefaultPlacement = new JRadioButtonMenuItem("Default Placement", true);
-			menuItemDefaultPlacement.addItemListener(e -> { // I know this is ugly, but what can
-											// you do
-				statusstring = "Default Placement Mode ";
-				if (dme == null || dmm == null) {
-					statusstring = " ";
-				}
-				selection.setText(statusstring);
-				selMode = false;
-			});
-			menuItemDefaultPlacement.addActionListener(new PlacementModeListener(this, placementMode = new DefaultPlacementMode()));
-			placementGroup.add(menuItemDefaultPlacement);
-			optionsMenu.add(menuItemDefaultPlacement);
-
-			menuItemSelect = new JRadioButtonMenuItem("Select", false);
-			menuItemSelect.addActionListener(new PlacementModeListener(this, new SelectPlacementMode()));
-			menuItemSelect.addItemListener(e -> {
-				selMode = true;
-			});
-			placementGroup.add(menuItemSelect);
-			optionsMenu.add(menuItemSelect);
-
-			menuItemDelete = new JRadioButtonMenuItem("Delete", false);
-			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
-			menuItemDelete.addItemListener(e -> {
-				selMode = false;
-			});
-			placementGroup.add(menuItemDelete);
-			optionsMenu.add(menuItemDelete);
 
 			setJMenuBar(menuBar);
 
