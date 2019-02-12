@@ -70,6 +70,7 @@ public class EditorTabComponent extends JPanel implements ActionListener {
 			setRolloverEnabled(true);
 		}
 		
+
 		@Override
 		public Dimension getPreferredSize() {
 			return new Dimension(11, 11);

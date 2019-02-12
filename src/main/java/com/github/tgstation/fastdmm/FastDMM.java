@@ -113,10 +113,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 	private JCheckBoxMenuItem menuItemAutoSave;
 	private JCheckBoxMenuItem menuItemPlayAnimations;
+	private JCheckBoxMenuItem menuItemConsoleVisible;
 	
 	
 	private JMenu fileMenu;
 	private JMenu editMenu;
+	private JMenu mapMenu;
 	private JMenu optionsMenu;
 	
 	private JPopupMenu currPopup;
@@ -275,7 +277,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			rightBottomTabs.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
 				}
-			});		
+			});
+
 						
 			JTextArea outputTextArea = new JTextArea();			
 			
@@ -283,17 +286,20 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			
 			System.setErr(new PrintStream(outputStream));
 			
-			rightBottomTabs.addTab("Output", new JScrollPane(outputTextArea));
 			
+			rightBottomTabs.addTab("Output", new JScrollPane(outputTextArea));
+
 			rightPanel.add(rightBottomTabs, BorderLayout.SOUTH);
 
+		
 			getContentPane().add(rightPanel, BorderLayout.CENTER);
 			getContentPane().add(leftPanel, BorderLayout.WEST);
 
 			setSize(1280, 720);
 			setPreferredSize(getSize());
 			pack();
-
+			
+			
 			menuBar = new JMenuBar();
 
 			fileMenu = new JMenu("File");
@@ -338,13 +344,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 			fileMenu.addSeparator();
 
-			menuItemMapImage = new JMenuItem("Create map image");
-			menuItemMapImage.setActionCommand("mapimage");
-			menuItemMapImage.addActionListener(FastDMM.this);
-			menuItemMapImage.setEnabled(false);
-			fileMenu.add(menuItemMapImage);
-			
-			fileMenu.addSeparator();
 			
 			menuItemExit = new JMenuItem("Exit");
 			menuItemExit.setActionCommand("exit");
@@ -369,6 +368,27 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemRedo.setEnabled(false);
 			editMenu.add(menuItemRedo);
 
+			
+			
+			mapMenu = new JMenu("Map");
+			mapMenu.setMnemonic(KeyEvent.VK_M);
+			mapMenu.getPopupMenu().setLightWeightPopupEnabled(false);
+			menuBar.add(mapMenu);
+			
+			menuItemExpand = new JMenuItem("Expand Map");
+			menuItemExpand.setActionCommand("expand");
+			menuItemExpand.addActionListener(FastDMM.this);
+			menuItemExpand.setEnabled(false);
+			mapMenu.add(menuItemExpand);
+			
+			mapMenu.addSeparator();
+
+			menuItemMapImage = new JMenuItem("Create map image");
+			menuItemMapImage.setActionCommand("mapimage");
+			menuItemMapImage.addActionListener(FastDMM.this);
+			menuItemMapImage.setEnabled(false);
+			mapMenu.add(menuItemMapImage);
+			
 			optionsMenu = new JMenu("Options");
 			optionsMenu.setMnemonic(KeyEvent.VK_O);
 			menuBar.add(optionsMenu);
@@ -390,12 +410,16 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemPlayAnimations.setSelected(options.playAnimations);
 			optionsMenu.add(menuItemPlayAnimations);
 			
-
-			menuItemExpand = new JMenuItem("Expand Map");
-			menuItemExpand.setActionCommand("expand");
-			menuItemExpand.addActionListener(FastDMM.this);
-			menuItemExpand.setEnabled(false);
-			optionsMenu.add(menuItemExpand);
+			
+			optionsMenu.addSeparator();
+			
+			
+			menuItemConsoleVisible = new JCheckBoxMenuItem("Console", options.consoleVisible);
+			menuItemConsoleVisible.setActionCommand("consoleVisibleToggle");
+			menuItemConsoleVisible.addActionListener(FastDMM.this);
+			menuItemConsoleVisible.setSelected(options.consoleVisible);
+			optionsMenu.add(menuItemConsoleVisible);
+			
 
 			optionsMenu.addSeparator();
 
@@ -439,6 +463,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			filters.add("/mob");
 			filters.add("/area");
 
+			
 			// Yes, there's a good reason input is being handled in 2 places:
 			// For some reason, this doesn't work when the LWJGL Canvas is in
 			// focus.
@@ -495,6 +520,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 						filters.add(filter);
 					}
 				}
+				
 			}
 		} else if ("open_dme".equals(e.getActionCommand())) {
 			openDME();
@@ -502,6 +528,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			autoSaveToggle();
 		} else if ("playAnimationsToggle".equals(e.getActionCommand())) {
 			playAnimationsToggle();
+		} else if ("consoleVisibleToggle".equals(e.getActionCommand())) {
+			consoleVisibleToggle();
 		} else if ("open".equals(e.getActionCommand())) {
 			openDMM();
 		} else if ("save".equals(e.getActionCommand())) {
@@ -696,6 +724,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private void playAnimationsToggle() {
 		options.playAnimations = !options.playAnimations;
 		options.saveOptions();
+	}
+	
+	private void consoleVisibleToggle() {
+		options.consoleVisible = !options.consoleVisible;
+		options.saveOptions();
+		rightBottomTabs.setVisible(options.consoleVisible);
 	}
 	
 	private void openDMM(File filetoopen) {
@@ -1328,6 +1362,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 	private void initOptions() {
 		options = FastDMMOptionsModel.createOrLoadOptions();
+		rightBottomTabs.setVisible(options.consoleVisible);
 	}
 
 	private void initRecent(String mode) {
