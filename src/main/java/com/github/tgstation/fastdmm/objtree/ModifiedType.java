@@ -160,11 +160,16 @@ public class ModifiedType extends ObjInstance {
 		okButton.addActionListener(e -> {
             model.doReturnTrue = true;
             dialog.setVisible(false);
+            dialog.dispose(); 
         });
 		bottomPanel.add(okButton, BorderLayout.EAST);
 		
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(e -> dialog.setVisible(false));
+		cancelButton.addActionListener(e -> {	
+			dialog.setVisible(false);
+			dialog.dispose();
+		});
+		
 		bottomPanel.add(cancelButton, BorderLayout.WEST);
 		
 		dialog.setLocationRelativeTo(editor);
@@ -201,9 +206,6 @@ public class ModifiedType extends ObjInstance {
 		
 		JList<String> iconStateList = new JList<String>(iconStateListModel);
 		
-		
-		iconStateList.setPreferredSize(new Dimension(150,500));
-		
 		iconStateViewer.setPreferredSize(new Dimension(600,500));
 		
 		dialog.getContentPane().add(new JScrollPane(iconStateList), BorderLayout.WEST);
@@ -233,6 +235,7 @@ public class ModifiedType extends ObjInstance {
             if (iconStateList.getSelectedValue() != null)
             	vars.put("icon_state", '"'+iconStateList.getSelectedValue()+'"');
             	cachedIconState = null;
+            dialog.dispose(); 
         });
 		
 		bottomPanel.add(okButton, BorderLayout.EAST);
@@ -241,6 +244,7 @@ public class ModifiedType extends ObjInstance {
 		
 		cancelButton.addActionListener(e -> {
 			dialog.setVisible(false);
+			dialog.dispose();
 		});
 		
 		bottomPanel.add(cancelButton, BorderLayout.WEST);
