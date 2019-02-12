@@ -10,14 +10,14 @@ public abstract class ObjInstance {
 	public abstract boolean istype(String path);
 	public abstract String toStringTGM();
 	
-	private int cachedDir = -1;
-	private int cachedPixelX = -1234;
-	private int cachedPixelY = -1234;
-	private float cachedLayer = -1234;
-	private int cachedPlane = -1234;
-	private Color cachedColor = null;
-	private String cachedIconState = null;
-	private String cachedIcon = null;
+	public int cachedDir = -1;
+	public int cachedPixelX = -1234;
+	public int cachedPixelY = -1234;
+	public float cachedLayer = -1234;
+	public int cachedPlane = -1234;
+	public Color cachedColor = null;
+	public String cachedIconState = null;
+	public String cachedIcon = null;
 
 	public String getIcon() {
 		if(cachedIcon == null) {

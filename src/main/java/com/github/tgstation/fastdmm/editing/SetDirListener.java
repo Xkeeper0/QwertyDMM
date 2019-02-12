@@ -27,6 +27,8 @@ public class SetDirListener extends SimpleContextMenuListener {
 			
 			mt.vars.put("dir", Integer.toString(newDir));
 			
+			mt.cachedDir = -1;
+			
 			String newKey = ti.replaceObject(oInstance, mt);
 			
 			editor.dmm.putMap(location, newKey);

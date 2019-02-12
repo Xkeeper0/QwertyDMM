@@ -1,18 +1,27 @@
 package com.github.tgstation.fastdmm.objtree;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.regex.*;
 
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.github.tgstation.fastdmm.FastDMM;
+import com.github.tgstation.fastdmm.dmirender.DMI;
 import com.github.tgstation.fastdmm.dmmmap.DMM;
 import com.github.tgstation.fastdmm.editing.ui.ModifiedTypeRenderer;
 import com.github.tgstation.fastdmm.editing.ui.ModifiedTypeTableModel;
@@ -164,5 +173,82 @@ public class ModifiedType extends ObjInstance {
 		dialog.setVisible(true);
 		
 		return model.doReturnTrue;
+	}
+	
+	public void editIconState(FastDMM editor) {
+		final JDialog dialog = new JDialog(editor, "Edit Icon State", true);
+		
+
+		DMI dmi = FastDMM.getFastDMM().getDmi(getIcon(), true);
+		
+		
+		JLabel iconStateViewer;
+		
+		if (getIconState() != null)
+			iconStateViewer = new JLabel(new ImageIcon(dmi.getIconState(getIconState()).getSubstate(0).getScaledImage(6)), JLabel.CENTER);
+		else {
+			iconStateViewer = new JLabel(new ImageIcon(), JLabel.CENTER);
+		}
+			
+		iconStateViewer.setHorizontalAlignment(JLabel.CENTER);
+		
+		
+		DefaultListModel<String> iconStateListModel = new DefaultListModel<String>();
+		
+	    for (String iconStateName : dmi.iconStates.keySet()) {
+	    	iconStateListModel.addElement(iconStateName);
+	    }
+		
+		JList<String> iconStateList = new JList<String>(iconStateListModel);
+		
+		
+		iconStateList.setPreferredSize(new Dimension(150,500));
+		
+		iconStateViewer.setPreferredSize(new Dimension(600,500));
+		
+		dialog.getContentPane().add(new JScrollPane(iconStateList), BorderLayout.WEST);
+	
+		dialog.getContentPane().add(iconStateViewer, BorderLayout.EAST);
+		
+		
+		JPanel bottomPanel = new JPanel(new BorderLayout());
+		
+		dialog.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		
+		
+		iconStateList.addListSelectionListener(new ListSelectionListener() {
+
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					iconStateViewer.setIcon(new ImageIcon (dmi.getIconState(iconStateList.getSelectedValue().toString()).getSubstate(0).getScaledImage(6)));
+				}
+			}
+		});
+		
+		
+		JButton okButton = new JButton("OK");
+		
+		okButton.addActionListener(e -> {
+            dialog.setVisible(false);
+            if (iconStateList.getSelectedValue() != null)
+            	vars.put("icon_state", '"'+iconStateList.getSelectedValue()+'"');
+            	cachedIconState = null;
+        });
+		
+		bottomPanel.add(okButton, BorderLayout.EAST);
+		
+		JButton cancelButton = new JButton("Cancel");
+		
+		cancelButton.addActionListener(e -> {
+			dialog.setVisible(false);
+		});
+		
+		bottomPanel.add(cancelButton, BorderLayout.WEST);
+		
+		dialog.setLocationRelativeTo(editor);
+		dialog.setSize(750, 500);
+		dialog.setPreferredSize(dialog.getSize());
+		dialog.setVisible(true);
+		
 	}
 }

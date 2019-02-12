@@ -1046,10 +1046,17 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 									item.addActionListener(new SetDirListener(this, l, i, constants.DIRECTIONS[j]));
 									setDirMenu.add(item);
 								}
+
+								item = new JMenuItem("Edit Icon State");
+								item.addActionListener(new EditIconStateListener(this, l, i));
+								menu.add(item);
+								
 								
 								item = new JMenuItem("View Variables");
 								item.addActionListener(new EditVarsListener(this, l, i));
 								menu.add(item);
+		
+
 								
 								item = new JMenuItem("Move to Top");
 								item.addActionListener(new MoveToTopListener(this, l, i));

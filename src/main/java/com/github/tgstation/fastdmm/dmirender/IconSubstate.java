@@ -3,7 +3,9 @@ package com.github.tgstation.fastdmm.dmirender;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 import javax.swing.Icon;
 
@@ -50,6 +52,14 @@ public class IconSubstate implements Icon {
 		return dmi.width;
 	}
 	
+	public BufferedImage getBufferedImage() {
+		return dmi.image.getSubimage(i_x1,  i_y1, getIconWidth(), getIconHeight());
+	}
+
+	public Image getScaledImage(float scale) { //SLOW
+		return dmi.image.getSubimage(i_x1,  i_y1, getIconWidth(), getIconHeight()).getScaledInstance((int) (getIconWidth()*scale), (int) (getIconHeight()*scale), BufferedImage.SCALE_REPLICATE);
+	}
+	
 	// Return true if substate is fully opaque.
 	public boolean isOpaque() {
 		if(dmi.image == null)
@@ -94,6 +104,7 @@ public class IconSubstate implements Icon {
 			return (int)(parent.dmi.width*scalingFactor);
 		}
 
+		
 		@Override
 		public void paintIcon(Component c, Graphics g, int px, int py) {
 			if(g instanceof Graphics2D) {
