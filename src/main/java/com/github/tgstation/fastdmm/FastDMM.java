@@ -407,27 +407,29 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			ButtonGroup placementGroup = new ButtonGroup();
 
 			menuItemPlace = new JRadioButtonMenuItem("Place", true);
-
+			
+			
 			
 			menuItemPlace.addActionListener(new PlacementModeListener(this, new PlacePlacementMode()));
 			placementGroup.add(menuItemPlace);
-
-			KeyStroke placeModeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.SHIFT_DOWN_MASK);
-			menuItemPlace.setAccelerator(placeModeKeyStroke);
 			
+			KeyStroke menuItemPlaceKey = KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.SHIFT_DOWN_MASK);
+			menuItemPlace.setAccelerator(menuItemPlaceKey);
+
 			modeMenu.add(menuItemPlace);
 
 			
 			
 			menuItemSelect = new JRadioButtonMenuItem("Select", false);
 
-
+			
 			
 			menuItemSelect.addActionListener(new PlacementModeListener(this, new SelectPlacementMode()));
 			placementGroup.add(menuItemSelect);
 			
-			KeyStroke selectModeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK);
-			menuItemSelect.setAccelerator(selectModeKeyStroke);
+
+			KeyStroke menuItemSelectKey = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK);
+			menuItemSelect.setAccelerator(menuItemSelectKey);
 			
 			modeMenu.add(menuItemSelect);
 
@@ -436,12 +438,14 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemDelete = new JRadioButtonMenuItem("Delete", false);
 
 			
+			
 			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
 			placementGroup.add(menuItemDelete);
 
-			KeyStroke deleteModeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK);
-			menuItemDelete.setAccelerator(deleteModeKeyStroke);
+			KeyStroke menuItemDeleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK);
+			menuItemDelete.setAccelerator(menuItemDeleteKey);
 			
+
 			modeMenu.add(menuItemDelete);
 			
 
@@ -668,6 +672,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			redoAction();
 		} else if ("exit".equals(e.getActionCommand())) {
 			System.exit(0);
+		} else if ("modePlace".equals(e.getActionCommand())) {
+			menuItemPlace.doClick();
+		} else if ("modeSelect".equals(e.getActionCommand())) {
+			menuItemSelect.doClick();
+		} else if ("modeDelete".equals(e.getActionCommand())) {
+			menuItemDelete.doClick();
 		}
 	}
 
@@ -964,6 +974,9 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		boolean cut = KeyboardAdapter.isKeyPressed(Keyboard.KEY_X);
 		boolean paste = KeyboardAdapter.isKeyPressed(Keyboard.KEY_V);
 		
+		boolean keyA = KeyboardAdapter.isKeyPressed(Keyboard.KEY_A);
+		boolean keyS = KeyboardAdapter.isKeyPressed(Keyboard.KEY_S);
+		boolean keyD = KeyboardAdapter.isKeyPressed(Keyboard.KEY_D);
 		
 		isCtrlPressed = KeyboardAdapter.isKeyDown(Keyboard.KEY_LCONTROL)
 				|| KeyboardAdapter.isKeyDown(Keyboard.KEY_RCONTROL);
@@ -983,6 +996,15 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			
 		} else if (cut && isCtrlPressed) {
 			
+		} else if (keyA && isShiftPressed) {
+			ActionEvent ae = new ActionEvent(this, 1, "modePlace");
+			actionPerformed(ae);		
+		} else if (keyS && isShiftPressed) {
+			ActionEvent ae = new ActionEvent(this, 1, "modeSelect");
+			actionPerformed(ae);	
+		} else if (keyD && isShiftPressed) {
+			ActionEvent ae = new ActionEvent(this, 1, "modeDelete");
+			actionPerformed(ae);	
 		}
 
 		if (Mouse.isButtonDown(2) || (Mouse.isButtonDown(0) && isAltPressed)) {
