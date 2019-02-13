@@ -20,11 +20,14 @@ import com.github.tgstation.fastdmm.objtree.ObjInstance;
 
 public class SelectPlacementMode implements PlacementMode {
     public FastDMM editor;
-
+    
+    
     public Set<Location> selection = new HashSet<Location>();
     FloatingSelection floatSelect;
     @Override
     public PlacementHandler getPlacementHandler(FastDMM editor, ObjInstance instance, Location initialLocation) {
+
+    	
         this.editor = editor;
         
         if(selection.contains(initialLocation) && !editor.isAltPressed && !editor.isCtrlPressed && !editor.isShiftPressed) {
@@ -64,6 +67,10 @@ public class SelectPlacementMode implements PlacementMode {
         
         return new SelectPlacementHandler();
     }
+    
+	public String getLabelText() {
+		return "Select Mode ";
+	}
 
     @Override
     public int visualize(Set<RenderInstance> rendInstanceSet, int currCreationIndex) {
@@ -97,13 +104,13 @@ public class SelectPlacementMode implements PlacementMode {
 
     public void setCount() {
         if(selection.size() > 1) {
-            editor.statusstring = selection.size() + " tiles selected. ";
+            editor.modeLabelString = selection.size() + " tiles selected. ";
         } else if(selection.size() == 1) {
-            editor.statusstring = selection.size() + " tile selected. ";
+            editor.modeLabelString = selection.size() + " tile selected. ";
         } else if(selection.size() == 0) {
-            editor.statusstring = "No tiles selected. ";
+            editor.modeLabelString = "No tiles selected. ";
         }
-        editor.selection.setText(editor.statusstring);
+        editor.modeLabel.setText(editor.modeLabelString);
     }
 
     public void clearSelection() {

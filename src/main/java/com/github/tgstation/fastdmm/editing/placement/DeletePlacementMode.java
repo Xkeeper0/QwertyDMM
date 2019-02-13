@@ -12,8 +12,11 @@ import com.github.tgstation.fastdmm.objtree.ObjInstance;
 
 public class DeletePlacementMode implements PlacementMode {
 
+		
 	@Override
 	public PlacementHandler getPlacementHandler(FastDMM editor, ObjInstance instance, Location initialLocation) {
+		
+		
 		if(instance == null)
 			return null;
 		
@@ -23,6 +26,10 @@ public class DeletePlacementMode implements PlacementMode {
 			return new DeletePlacementHandler();
 	}
 
+	public String getLabelText() {
+		return "Delete Mode ";
+	}
+	
 	@Override
 	public int visualize(Set<RenderInstance> rendInstanceSet, int currCreationIndex) {
 		return currCreationIndex;

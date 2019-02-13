@@ -12,7 +12,7 @@ import com.github.tgstation.fastdmm.dmmmap.Location;
 import com.github.tgstation.fastdmm.dmmmap.TileInstance;
 import com.github.tgstation.fastdmm.objtree.ObjInstance;
 
-public class DefaultPlacementHandler implements PlacementHandler {
+public class PlacePlacementHandler implements PlacementHandler {
 	private Set<Location> usedLocations = new HashSet<>();
 	private FastDMM editor;
 	private ObjInstance oInstance;

@@ -10,10 +10,13 @@ import com.github.tgstation.fastdmm.dmmmap.Location;
 import com.github.tgstation.fastdmm.dmmmap.TileInstance;
 import com.github.tgstation.fastdmm.objtree.ObjInstance;
 
-public class DefaultPlacementMode implements PlacementMode {
-
+public class PlacePlacementMode implements PlacementMode {
+	
 	@Override
 	public PlacementHandler getPlacementHandler(FastDMM editor, ObjInstance instance, Location initialLocation) {
+		
+		
+		
 		if(instance == null)
 			return null;
 		
@@ -22,7 +25,11 @@ public class DefaultPlacementMode implements PlacementMode {
 		else if(editor.isShiftPressed)
 			return new BlockPlacementHandler();
 		else
-			return new DefaultPlacementHandler();
+			return new PlacePlacementHandler();
+	}
+	
+	public String getLabelText() {
+		return "Place Mode ";
 	}
 
 	@Override

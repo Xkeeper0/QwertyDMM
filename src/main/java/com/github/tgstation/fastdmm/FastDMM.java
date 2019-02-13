@@ -28,8 +28,8 @@ import com.github.tgstation.fastdmm.dmmmap.DMM;
 import com.github.tgstation.fastdmm.dmmmap.Location;
 import com.github.tgstation.fastdmm.dmmmap.TileInstance;
 import com.github.tgstation.fastdmm.editing.*;
-import com.github.tgstation.fastdmm.editing.placement.DefaultPlacementMode;
 import com.github.tgstation.fastdmm.editing.placement.DeletePlacementMode;
+import com.github.tgstation.fastdmm.editing.placement.PlacePlacementMode;
 import com.github.tgstation.fastdmm.editing.placement.PlacementHandler;
 import com.github.tgstation.fastdmm.editing.placement.PlacementMode;
 import com.github.tgstation.fastdmm.editing.placement.SelectPlacementMode;
@@ -72,9 +72,9 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	int selX = 0;
 	int selY = 0;
 
-	boolean selMode = false;
+	public boolean selMode = false;
 
-	public String statusstring = " ";
+	public String modeLabelString = " ";
 
 	public FastDMMOptionsModel options;
 
@@ -83,7 +83,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JPanel instancesPanel;
 	private JPanel vpData;
 	private JLabel coords;
-	public JLabel selection;
+	public JLabel modeLabel;
 	private JTabbedPane leftTabs;
 	
 	private JPanel rightPanel;
@@ -108,7 +108,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JMenuItem menuItemRedo;
 	private JMenuItem menuItemOpenDME;
 	private JMenuItem menuItemChangeFilters;
-	private JMenuItem menuItemDefaultPlacement;
+	private JMenuItem menuItemPlace;
 	private JMenuItem menuItemSelect;
 	private JMenuItem menuItemDelete;
 
@@ -211,12 +211,10 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			vpData.setSize(350, 25);
 			vpData.setPreferredSize(vpData.getSize());
 			coords = new JLabel(" No DME loaded.");
-			if (currPlacementHandler != null) {
-				statusstring = "No tiles selected. ";
-			}
-			selection = new JLabel(statusstring);
+
+			modeLabel = new JLabel();
 			vpData.add(coords, BorderLayout.WEST);
-			vpData.add(selection, BorderLayout.EAST);
+			vpData.add(modeLabel, BorderLayout.EAST);
 			leftPanel.add(vpData, BorderLayout.SOUTH);
 
 			instancesPanel = new JPanel();
@@ -408,36 +406,51 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 			ButtonGroup placementGroup = new ButtonGroup();
 
-			menuItemDefaultPlacement = new JRadioButtonMenuItem("Default Placement", true);
-			menuItemDefaultPlacement.addItemListener(e -> { // I know this is ugly, but what can
-											// you do
-				statusstring = "Default Placement Mode ";
-				if (dme == null || dmm == null) {
-					statusstring = " ";
-				}
-				selection.setText(statusstring);
-				selMode = false;
-			});
-			menuItemDefaultPlacement.addActionListener(new PlacementModeListener(this, placementMode = new DefaultPlacementMode()));
-			placementGroup.add(menuItemDefaultPlacement);
-			modeMenu.add(menuItemDefaultPlacement);
+			menuItemPlace = new JRadioButtonMenuItem("Place", true);
 
+			
+			menuItemPlace.addActionListener(new PlacementModeListener(this, new PlacePlacementMode()));
+			placementGroup.add(menuItemPlace);
+
+			KeyStroke placeModeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.SHIFT_DOWN_MASK);
+			menuItemPlace.setAccelerator(placeModeKeyStroke);
+			
+			modeMenu.add(menuItemPlace);
+
+			
+			
 			menuItemSelect = new JRadioButtonMenuItem("Select", false);
+
+
+			
 			menuItemSelect.addActionListener(new PlacementModeListener(this, new SelectPlacementMode()));
-			menuItemSelect.addItemListener(e -> {
-				selMode = true;
-			});
 			placementGroup.add(menuItemSelect);
+			
+			KeyStroke selectModeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK);
+			menuItemSelect.setAccelerator(selectModeKeyStroke);
+			
 			modeMenu.add(menuItemSelect);
 
+			
+			
 			menuItemDelete = new JRadioButtonMenuItem("Delete", false);
-			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
-			menuItemDelete.addItemListener(e -> {
-				selMode = false;
-			});
-			placementGroup.add(menuItemDelete);
-			modeMenu.add(menuItemDelete);
 
+			
+			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
+			placementGroup.add(menuItemDelete);
+
+			KeyStroke deleteModeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK);
+			menuItemDelete.setAccelerator(deleteModeKeyStroke);
+			
+			modeMenu.add(menuItemDelete);
+			
+
+			
+			
+			new PlacementModeListener(this, new PlacePlacementMode()).actionPerformed(null); //set default mode on startup
+
+			
+			
 			
 			optionsMenu = new JMenu("Options");
 			optionsMenu.setMnemonic(KeyEvent.VK_O);
@@ -562,8 +575,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				JOptionPane.showMessageDialog(FastDMM.this, sw.getBuffer(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if ("new".equals(e.getActionCommand())) {
-			statusstring = " ";
-			selection.setText(statusstring);
 			String usePath = JOptionPane.showInputDialog(canvas,
 					"Please enter the path of the new DMM file relative to your DME: ", "FastDMM",
 					JOptionPane.QUESTION_MESSAGE);
@@ -661,8 +672,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	}
 
 	private void openDME(File filetoopen) {
-		statusstring = " ";
-		selection.setText(statusstring);
 		synchronized (this) {
 			objTree = null;
 			dmm = null;
@@ -794,14 +803,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				menuItemMapImage.setEnabled(false);
 			} finally {
 				areMenusFrozen = false;
-				if (!selMode) {
-					statusstring = "Default Placement Mode ";
-				}
-				selection.setText(statusstring);
+				
 				if (selMode) {
 					SelectPlacementMode spm = (SelectPlacementMode) placementMode;
 					spm.clearSelection();
 				}
+				
 				addToRecent(dme, dmm);
 				this.setTitle(dme.getName().replaceFirst("[.][^.]+$", "") + ": "
 						+ dmm.file.getName().replaceFirst("[.][^.]+$", ""));
@@ -937,11 +944,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			currPlacementHandler.dragTo(new Location(selX, selY, 1));
 		}
 
-		if (dme == null || dmm == null) { // putting this here because it's the
-											// only func that updates regularly
-											// besides loop()
-			statusstring = " ";
-		}
 
 		float dwheel = Mouse.getDWheel();
 		if (dwheel != 0) {

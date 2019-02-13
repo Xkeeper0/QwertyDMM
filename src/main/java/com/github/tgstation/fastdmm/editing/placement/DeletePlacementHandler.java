@@ -22,7 +22,7 @@ public class DeletePlacementHandler implements PlacementHandler {
 		this.oInstance = instance;
 		this.usedLocations.add(initialLocation);
 	}
-
+	
 	@Override
 	public void dragTo(Location location) {
 		usedLocations.add(location);

@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import com.github.tgstation.fastdmm.FastDMM;
 import com.github.tgstation.fastdmm.editing.placement.PlacementMode;
+import com.github.tgstation.fastdmm.editing.placement.SelectPlacementMode;
 
 public class PlacementModeListener implements ActionListener {
 	private FastDMM editor;
@@ -21,6 +22,13 @@ public class PlacementModeListener implements ActionListener {
 			if(editor.placementMode != null)
 				editor.placementMode.flush(editor);
 			editor.placementMode = mode;
+			editor.modeLabelString = mode.getLabelText();
+			editor.modeLabel.setText(editor.modeLabelString);
+			if (mode instanceof SelectPlacementMode) {
+				editor.selMode = true;
+			} else {
+				editor.selMode = false;
+			}
 		}
 	}
 }
