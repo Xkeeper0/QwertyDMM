@@ -546,8 +546,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				filters.clear();
 				for (String filter : ta.getText().split("(\\r\\n|\\r|\\n)")) {
 					if (!filter.trim().isEmpty()) {
-						if (filter.startsWith("~"))
-							filter = '~' + ObjectTreeParser.cleanPath(filter.substring(1));
+						if (filter.startsWith("!"))
+							filter = '!' + ObjectTreeParser.cleanPath(filter.substring(1));
 						else
 							filter = ObjectTreeParser.cleanPath(filter);
 						filters.add(filter);
@@ -1563,7 +1563,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		synchronized (filters) {
 			for (String s : filters) {
 				boolean newValid = true;
-				if (s.startsWith("~")) {
+				if (s.startsWith("!")) {
 					s = s.substring(1);
 					newValid = false;
 				}
