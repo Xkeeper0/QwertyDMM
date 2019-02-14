@@ -17,10 +17,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.github.tgstation.fastdmm.FastDMM;
+import com.github.tgstation.fastdmm.Util;
 import com.github.tgstation.fastdmm.dmirender.DMI;
 import com.github.tgstation.fastdmm.dmirender.IconState;
 import com.github.tgstation.fastdmm.dmmmap.DMM;
@@ -149,15 +152,29 @@ public class ModifiedType extends ObjInstance {
 	
 	public boolean viewVariables(FastDMM editor) {
 		final JDialog dialog = new JDialog(editor, "View Variables", true);
+		;
 		
 		final ModifiedTypeTableModel model = new ModifiedTypeTableModel(this);
 		JTable table = new JTable(model);
 		table.setFillsViewportHeight(true);
 		table.setDefaultRenderer(Object.class, new ModifiedTypeRenderer(model));
 		dialog.getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
+	
+		
+		JTextField filterField = Util.createRowFilter(table);
+		
+		filterField.setPreferredSize(new Dimension(600, 30));
+		
+		
+		dialog.getContentPane().add(filterField, BorderLayout.NORTH);
+		
+		
+
 		
 		JPanel bottomPanel = new JPanel(new BorderLayout());
 		dialog.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+
+		
 		
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(e -> {
@@ -176,7 +193,7 @@ public class ModifiedType extends ObjInstance {
 		bottomPanel.add(cancelButton, BorderLayout.WEST);
 		
 		dialog.setLocationRelativeTo(editor);
-		dialog.setSize(400, 450);
+		dialog.setSize(600, 500);
 		dialog.setPreferredSize(dialog.getSize());
 		dialog.setVisible(true);
 		

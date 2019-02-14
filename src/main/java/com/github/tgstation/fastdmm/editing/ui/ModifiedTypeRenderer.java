@@ -18,7 +18,8 @@ public class ModifiedTypeRenderer extends DefaultTableCellRenderer {
 	public ModifiedTypeRenderer(ModifiedTypeTableModel model) {
 		super();
 		this.model = model;
-		defFont = getFont();
+		defFont = getFont().deriveFont(Font.PLAIN, 14);
+
 		boldFont = defFont.deriveFont(Font.BOLD);
 		defaultColor = getBackground();
 	}

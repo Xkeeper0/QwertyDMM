@@ -6,6 +6,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import com.github.tgstation.fastdmm.dmirender.RenderInstance;
 import com.github.tgstation.fastdmm.dmmmap.Location;
@@ -269,4 +280,54 @@ public class Util {
 		
     	return currCreationIndex;
     }
+    
+
+    public static JTextField createRowFilter(JTable table) {
+        RowSorter<? extends TableModel> rs = table.getRowSorter();
+        if (rs == null) {
+            table.setAutoCreateRowSorter(true);
+            rs = table.getRowSorter();
+        }
+
+        TableRowSorter<? extends TableModel> rowSorter =
+                (rs instanceof TableRowSorter) ? (TableRowSorter<? extends TableModel>) rs : null;
+
+        if (rowSorter == null) {
+            throw new RuntimeException("Cannot find appropriate rowSorter: " + rs);
+        }
+
+        final JTextField tf = new JTextField(300);
+        tf.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                update(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                update(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                update(e);
+            }
+
+            private void update(DocumentEvent e) {
+                String text = tf.getText();
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                	try {
+                		rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(text)));
+                	} catch (PatternSyntaxException E) {
+                		
+                	}
+                }
+            }
+        });
+
+        return tf;
+    }
+
 }
