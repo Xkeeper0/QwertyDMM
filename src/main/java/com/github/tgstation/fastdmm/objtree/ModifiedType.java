@@ -22,9 +22,12 @@ import javax.swing.event.ListSelectionListener;
 
 import com.github.tgstation.fastdmm.FastDMM;
 import com.github.tgstation.fastdmm.dmirender.DMI;
+import com.github.tgstation.fastdmm.dmirender.IconState;
 import com.github.tgstation.fastdmm.dmmmap.DMM;
 import com.github.tgstation.fastdmm.editing.ui.ModifiedTypeRenderer;
 import com.github.tgstation.fastdmm.editing.ui.ModifiedTypeTableModel;
+import com.github.tgstation.fastdmm.editing.ui.IconStateListRenderer;
+
 
 public class ModifiedType extends ObjInstance {
 	public ModifiedType(Map<String,String> vars, String parentType) {
@@ -198,13 +201,16 @@ public class ModifiedType extends ObjInstance {
 		iconStateViewer.setHorizontalAlignment(JLabel.CENTER);
 		
 		
-		DefaultListModel<String> iconStateListModel = new DefaultListModel<String>();
+		DefaultListModel<IconState> iconStateListModel = new DefaultListModel<IconState>();
 		
-	    for (String iconStateName : dmi.iconStates.keySet()) {
-	    	iconStateListModel.addElement(iconStateName);
+	    for (IconState iconState : dmi.iconStates.values()) {
+	    	iconStateListModel.addElement(iconState);
 	    }
 		
-		JList<String> iconStateList = new JList<String>(iconStateListModel);
+		JList<IconState> iconStateList = new JList<IconState>(iconStateListModel);
+		
+		
+		iconStateList.setCellRenderer(new IconStateListRenderer());
 		
 		iconStateViewer.setPreferredSize(new Dimension(600,500));
 		
@@ -222,7 +228,7 @@ public class ModifiedType extends ObjInstance {
 
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
-					iconStateViewer.setIcon(new ImageIcon (dmi.getIconState(iconStateList.getSelectedValue().toString()).getSubstate(0).getScaledImage(6)));
+					iconStateViewer.setIcon(new ImageIcon (iconStateList.getSelectedValue().getSubstate(0).getScaledImage(6)));
 				}
 			}
 		});
@@ -233,7 +239,7 @@ public class ModifiedType extends ObjInstance {
 		okButton.addActionListener(e -> {
             dialog.setVisible(false);
             if (iconStateList.getSelectedValue() != null)
-            	vars.put("icon_state", '"'+iconStateList.getSelectedValue()+'"');
+            	vars.put("icon_state", '"'+iconStateList.getSelectedValue().name+'"');
             	cachedIconState = null;
             dialog.dispose(); 
         });
