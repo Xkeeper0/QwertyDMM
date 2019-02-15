@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -150,6 +151,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	
 	public double currentFrame = 0;
 	public double lastNanoTime = 0;
+	public double dt = 0;
 
 	public static final void main(String[] args) throws IOException, LWJGLException {
 		try {
@@ -997,20 +999,68 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		} else if (cut && isCtrlPressed) {
 			
 		} else if (keyA && isShiftPressed) {
+			
 			ActionEvent ae = new ActionEvent(this, 1, "modePlace");
 			actionPerformed(ae);		
+			
 		} else if (keyS && isShiftPressed) {
+			
 			ActionEvent ae = new ActionEvent(this, 1, "modeSelect");
 			actionPerformed(ae);	
+			
 		} else if (keyD && isShiftPressed) {
+			
 			ActionEvent ae = new ActionEvent(this, 1, "modeDelete");
 			actionPerformed(ae);	
+			
 		}
 
 		if (Mouse.isButtonDown(2) || (Mouse.isButtonDown(0) && isAltPressed)) {
 			viewportX -= (dx / viewportZoom);
 			viewportY += (dy / viewportZoom);
 		}
+		
+		
+		if (isShiftPressed) {
+		
+			if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_UP)) {
+				viewportY += canvas.getHeight() / viewportZoom;
+			}
+			
+			if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_DOWN)) {
+				viewportY += -canvas.getHeight() / viewportZoom;
+			}
+			
+			if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_LEFT)) {
+				viewportX += -canvas.getWidth() / viewportZoom;
+			}
+			
+			if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_RIGHT)) {
+				viewportX += canvas.getWidth() / viewportZoom;
+			}
+			
+		} else {
+			
+			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_UP)) {
+				viewportY += dt / 1000 / viewportZoom;
+			}
+			
+			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_DOWN)) {
+				viewportY += -dt / 1000 / viewportZoom;
+			}
+			
+			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_LEFT)) {
+				viewportX += -dt / 1000 / viewportZoom;
+			}
+			
+			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_RIGHT)) {
+				viewportX += dt/ 1000 / viewportZoom;
+			}
+		
+		}
+		
+		
+		
 
 		if (dme != null) {
 			if (dmm != null) {
@@ -1128,6 +1178,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 	private void loop() {
 
+		dt = ((double) System.nanoTime()-lastNanoTime) / 100000000.0f;
+		
 		// Set the clear color
 		glClearColor(0.25f, 0.25f, 0.5f, 1.0f);
 
@@ -1295,7 +1347,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			currCreationIndex = placementMode.visualize(rendInstanceSet, currCreationIndex);
 		}
 		
-		currentFrame += ((double) System.nanoTime()-lastNanoTime)/100000000.0f;
+		
+		currentFrame += dt;
 		lastNanoTime = (double) System.nanoTime();
 		
 		return rendInstanceSet;
