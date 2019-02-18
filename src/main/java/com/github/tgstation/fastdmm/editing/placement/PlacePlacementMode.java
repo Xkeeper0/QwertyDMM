@@ -20,10 +20,12 @@ public class PlacePlacementMode implements PlacementMode {
 		if(instance == null)
 			return null;
 		
-		if(editor.isCtrlPressed)
-			return new DirectionalPlacementHandler();
+		if(editor.isCtrlPressed && editor.isShiftPressed)
+			return new PixelPlacementHandler();
 		else if(editor.isShiftPressed)
 			return new BlockPlacementHandler();
+		else if(editor.isCtrlPressed)
+			return new DirectionalPlacementHandler();
 		else
 			return new PlacePlacementHandler();
 	}

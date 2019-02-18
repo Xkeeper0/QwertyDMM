@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -72,6 +73,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 	int selX = 0;
 	int selY = 0;
+	
+	int prevRelMouseX = 0;
+	int prevRelMouseY = 0;
+	public int relMouseX = 0;
+	public int relMouseY = 0;
 
 	public boolean selMode = false;
 
@@ -197,6 +203,9 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	}
 
 	public void initSwing() {
+		
+
+		
 		SwingUtilities.invokeLater(() -> {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			canvas = new Canvas();
@@ -498,7 +507,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			filters.add("/mob");
 			filters.add("/area");
 
-			
 			// Yes, there's a good reason input is being handled in 2 places:
 			// For some reason, this doesn't work when the LWJGL Canvas is in
 			// focus.
@@ -885,6 +893,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		setVisible(true);
 		// Display.setDisplayMode(new DisplayMode(640, 480));
 		// Display.setResizable(true);
@@ -948,14 +957,26 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		float yScrOff = (float) Display.getHeight() / viewportZoom / 2;
 
 		int prevSelX = selX, prevSelY = selY;
+		
 
+		prevRelMouseX = relMouseX;
+		prevRelMouseY = relMouseY;	
+		
 		selX = (int) Math.floor(viewportX + (xpos / viewportZoom) - xScrOff);
 		selY = (int) Math.floor(viewportY - (ypos / viewportZoom) + yScrOff);
-
+		
+		
+		if (objTree != null) {
+			relMouseX = (int) (viewportX + (xpos / (viewportZoom/objTree.icon_size)) - xScrOff);
+			relMouseY = (int) (viewportY - (ypos / (viewportZoom/objTree.icon_size)) + yScrOff);
+		}
+			
 		if ((prevSelX != selX || prevSelY != selY) && currPlacementHandler != null) {
 			currPlacementHandler.dragTo(new Location(selX, selY, 1));
 		}
-
+		if ((prevRelMouseX != relMouseX || prevRelMouseY != relMouseY) && currPlacementHandler != null) {
+			currPlacementHandler.dragToPixel(relMouseX, relMouseY);
+		}
 
 		float dwheel = Mouse.getDWheel();
 		if (dwheel != 0) {
@@ -971,6 +992,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 		KeyboardAdapter.updateKeys();
 
+		
 		boolean undo = KeyboardAdapter.isKeyPressed(Keyboard.KEY_Z);
 		boolean copy = KeyboardAdapter.isKeyPressed(Keyboard.KEY_C);
 		boolean cut = KeyboardAdapter.isKeyPressed(Keyboard.KEY_X);

@@ -76,4 +76,9 @@ public class PlacePlacementHandler implements PlacementHandler {
 		}
 		editor.addToUndoStack(editor.dmm.popDiffs());
 	}
+
+	@Override
+	public void dragToPixel(int x, int y) {
+		
+	}
 }

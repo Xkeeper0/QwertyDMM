@@ -15,85 +15,34 @@ import com.github.tgstation.fastdmm.dmmmap.TileInstance;
 import com.github.tgstation.fastdmm.objtree.ModifiedType;
 import com.github.tgstation.fastdmm.objtree.ObjInstance;
 
-public class DirectionalPlacementHandler implements PlacementHandler {
+public class PixelPlacementHandler implements PlacementHandler {
 	private Location usedLocation;
 	private FastDMM editor;
 	private ObjInstance oInstance;
-	private int dirCount = 1;
-	private int usedDir;
-	private ObjInstance usedInstance;
-	Map<Integer, ObjInstance> dirToInstance = new HashMap<>();
+	private ModifiedType usedInstance;
+	private int initMouseY;
+	private int initMouseX;
+	
 	@Override
 	public void init(FastDMM editor, ObjInstance instance, Location initialLocation) {
 		this.editor = editor;
 		this.oInstance = instance;
-		this.usedInstance = instance;
+		this.usedInstance = ModifiedType.deriveFrom(instance);
 		this.usedLocation = initialLocation;
+		this.initMouseX = editor.relMouseX;
+		this.initMouseY = editor.relMouseY;
 		
 		DMI dmi = editor.getDmi(oInstance.getIcon(), false);
 		if(dmi != null) {
 			String iconStateStr = oInstance.getIconState();
 			IconState state = dmi.getIconState(iconStateStr);
-			dirCount = state.dirCount;
 		}
-		for(int i = 0; i < dirCount; i++) {
-			int dir = IconState.indexToDirArray[i];
-			if(oInstance.getDir() == dir) {
-				dirToInstance.put(dir, oInstance);
-				continue;
-			}
-			ModifiedType mt = ModifiedType.deriveFrom(oInstance);
-			mt.vars.put("dir", "" + dir);
-			if(editor.modifiedTypes.containsKey(mt.toString())) {
-				mt = editor.modifiedTypes.get(mt.toString());
-			} else {
-				editor.modifiedTypes.put(mt.toString(), mt);
-				if(mt.parent != null) {
-					mt.parent.addInstance(mt);
-				}
-			}
-			dirToInstance.put(dir, mt);
-		}
+
 	}
 
 	@Override
 	public void dragTo(Location location) {
-		int dx = location.x - usedLocation.x;
-		int dy = location.y - usedLocation.y;
-		if(dirCount == 1) {
-			usedDir = 2;
-		} else if(dirCount == 4) {
-			if(dy > Math.abs(dx))
-				usedDir = 1;
-			else if(dy < -Math.abs(dx))
-				usedDir = 2;
-			else if(dx > 0)
-				usedDir = 4;
-			else if(dx < 0)
-				usedDir = 8;
-			else
-				usedDir = oInstance.getDir();
-		} else if(dirCount == 8) {
-			if(dx == 0 && dy > 0)
-				usedDir = 1;
-			else if(dx == 0 && dy < 0)
-				usedDir = 2;
-			else if(dy == 0 && dx > 0)
-				usedDir = 4;
-			else if(dy == 0 && dx < 0)
-				usedDir = 8;
-			else if(dx > 0 && dy > 0)
-				usedDir = 5;
-			else if(dx > 0 && dy < 0)
-				usedDir = 6;
-			else if(dx < 0 && dy > 0)
-				usedDir = 9;
-			else if(dx < 0 && dy < 0)
-				usedDir = 10;
-			else
-				usedDir = 2;
-		}
-		usedInstance = dirToInstance.get(usedDir);
+
 	}
 
 	@Override
@@ -109,8 +58,8 @@ public class DirectionalPlacementHandler implements PlacementHandler {
 		RenderInstance ri = new RenderInstance(currCreationIndex++);
 		ri.layer = usedInstance.getLayer();
 		ri.plane = usedInstance.getPlane();
-		ri.x = usedLocation.x + (oInstance.getPixelX()/(float)editor.objTree.icon_size);
-		ri.y = usedLocation.y + (oInstance.getPixelY()/(float)editor.objTree.icon_size);
+		ri.x = usedLocation.x + (usedInstance.getPixelX()/(float)editor.objTree.icon_size);
+		ri.y = usedLocation.y + (usedInstance.getPixelY()/(float)editor.objTree.icon_size);
 		ri.substate = substate;
 		ri.color = usedInstance.getColor();
 		
@@ -142,6 +91,13 @@ public class DirectionalPlacementHandler implements PlacementHandler {
 
 	@Override
 	public void dragToPixel(int x, int y) {
+		int dx = x - initMouseX;
+		int dy = y - initMouseY;
+		System.out.println(x+" "+y);		
 		
+		usedInstance.cachedPixelX = dx;
+		usedInstance.cachedPixelY = dy;
+		usedInstance.vars.put("pixel_x", Integer.toString(dx));
+		usedInstance.vars.put("pixel_y", Integer.toString(dy));	
 	}
 }

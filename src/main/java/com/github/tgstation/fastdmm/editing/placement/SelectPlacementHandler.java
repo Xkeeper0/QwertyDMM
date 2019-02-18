@@ -61,4 +61,9 @@ public class SelectPlacementHandler implements PlacementHandler {
 		return currCreationIndex;
 	}
 
+	@Override
+	public void dragToPixel(int x, int y) {
+		
+	}
+
 }

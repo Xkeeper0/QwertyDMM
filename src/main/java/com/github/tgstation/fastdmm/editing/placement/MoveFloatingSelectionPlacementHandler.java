@@ -37,4 +37,9 @@ public class MoveFloatingSelectionPlacementHandler implements PlacementHandler {
 		return currCreationIndex;
 	}
 
+	@Override
+	public void dragToPixel(int x, int y) {
+		
+	}
+
 }
