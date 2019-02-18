@@ -121,8 +121,11 @@ public class SelectPlacementMode implements PlacementMode {
 	public void addToTileMenu(FastDMM editor, Location mapLocation, TileInstance instance, JPopupMenu menu) {
 		this.editor = editor;
 		if(selection.contains(mapLocation)) {
-			JMenuItem item = new JMenuItem("Delete in Selection");
+			JMenuItem item = new JMenuItem("Delete Selection");
 			item.addActionListener(new SelectPlacementMode.SelectListener(editor, this, true, false));
+			menu.add(item);
+			item = new JMenuItem("Fill Selection");
+			item.addActionListener(new SelectPlacementMode.FillListener(editor, this));
 			menu.add(item);
 			item = new JMenuItem("Copy Selection");
 			item.addActionListener(new SelectPlacementMode.SelectListener(editor, this, false, true));
@@ -134,8 +137,11 @@ public class SelectPlacementMode implements PlacementMode {
 		if(floatSelect != null && mapLocation.x >= floatSelect.x && mapLocation.x >= floatSelect.x && 
 			mapLocation.x < (floatSelect.x+floatSelect.width) && mapLocation.y < (floatSelect.y+floatSelect.height)) {
 			
-			JMenuItem item = new JMenuItem("Delete in Selection");
+			JMenuItem item = new JMenuItem("Delete Selection");
 			item.addActionListener(new SelectPlacementMode.FloatingSelectionListener(editor, this, true, false));
+			menu.add(item);
+			item = new JMenuItem("Fill Selection");
+			item.addActionListener(new SelectPlacementMode.FillListener(editor, this));
 			menu.add(item);
 			item = new JMenuItem("Copy Selection");
 			item.addActionListener(new SelectPlacementMode.FloatingSelectionListener(editor, this, false, true));
@@ -255,6 +261,44 @@ public class SelectPlacementMode implements PlacementMode {
 				selection.clearSelection();
 				selection.floatSelect = newFloatSel;
 			}
+		}
+	}
+	
+	public static class FillListener implements ActionListener {
+		FastDMM editor;
+		SelectPlacementMode selection;
+		Location mapLocation;
+		ObjInstance oInstance;
+		
+		public FillListener(FastDMM editor, SelectPlacementMode selection) {
+			this.editor = editor;
+			this.selection = selection;
+			this.oInstance = editor.selectedInstance;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (oInstance != null)
+				synchronized(editor) {
+					HashMap<Location, String[]> changes = new HashMap<Location, String[]>();
+					for(Location l : selection.selection) {
+						String key = editor.dmm.map.get(l);
+						if(key == null)
+							continue;
+						TileInstance ti = editor.dmm.instances.get(key);
+						if(ti == null)
+							continue;
+					
+						String newKey = ti.addObject(oInstance);
+						
+						String[] keys = {key, newKey};
+						changes.put(l, keys);
+						
+						editor.dmm.putMap(l, newKey);
+					}
+					editor.addToUndoStack(editor.dmm.popDiffs());
+				}
+			
 		}
 	}
 }

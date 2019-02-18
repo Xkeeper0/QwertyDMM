@@ -1042,19 +1042,19 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		} else {
 			
 			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_UP)) {
-				viewportY += dt / 1000 / viewportZoom;
+				viewportY += dt * 100 / viewportZoom;
 			}
 			
 			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_DOWN)) {
-				viewportY += -dt / 1000 / viewportZoom;
+				viewportY += -dt * 100 / viewportZoom;
 			}
 			
 			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_LEFT)) {
-				viewportX += -dt / 1000 / viewportZoom;
+				viewportX += -dt * 100 / viewportZoom;
 			}
 			
 			if (KeyboardAdapter.isKeyDown(Keyboard.KEY_RIGHT)) {
-				viewportX += dt/ 1000 / viewportZoom;
+				viewportX += dt * 100 / viewportZoom;
 			}
 		
 		}
@@ -1177,8 +1177,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	}
 
 	private void loop() {
-
-		dt = ((double) System.nanoTime()-lastNanoTime) / 100000000.0f;
 		
 		// Set the clear color
 		glClearColor(0.25f, 0.25f, 0.5f, 1.0f);
@@ -1347,9 +1345,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			currCreationIndex = placementMode.visualize(rendInstanceSet, currCreationIndex);
 		}
 		
-		
-		currentFrame += dt;
+
+		dt = ((double) System.nanoTime()-lastNanoTime) / 100000000.0f;
 		lastNanoTime = (double) System.nanoTime();
+		currentFrame += dt;
+
 		
 		return rendInstanceSet;
 	}
