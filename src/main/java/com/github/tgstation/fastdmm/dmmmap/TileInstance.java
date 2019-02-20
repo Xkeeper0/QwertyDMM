@@ -230,7 +230,7 @@ public class TileInstance {
 		boolean hasTurf = false;
 		boolean hasArea = false;
 		for(ObjInstance obj : objs) {
-			if(!editor.inFilter(obj)) {
+			if(obj != null & !editor.inFilter(obj)) {
 				ti.objs.add(obj);
 				if(obj.istype("/turf"))
 					hasTurf = true;

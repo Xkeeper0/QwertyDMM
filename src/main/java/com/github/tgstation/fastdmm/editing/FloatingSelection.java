@@ -144,10 +144,14 @@ public class FloatingSelection {
 			}
 			for(Iterator<ObjInstance> iterator = ti.objs.iterator(); iterator.hasNext(); ) {
 				ObjInstance i = iterator.next();
-				if(hasTurf && i.istype("/turf"))
+				if (i != null) {
+					if(hasTurf && i.istype("/turf"))
+						iterator.remove();
+					else if(hasArea && i.istype("/area"))
+						iterator.remove();
+				} else {
 					iterator.remove();
-				else if(hasArea && i.istype("/area"))
-					iterator.remove();
+				}
 			}
 			ti.objs.addAll(addTi.objs);
 			ti.sortObjs();			

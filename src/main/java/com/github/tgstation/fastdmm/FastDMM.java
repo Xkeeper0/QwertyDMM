@@ -1636,16 +1636,20 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 	public boolean inFilter(ObjInstance i) {
 		boolean valid = false;
-		synchronized (filters) {
-			for (String s : filters) {
-				boolean newValid = true;
-				if (s.startsWith("!")) {
-					s = s.substring(1);
-					newValid = false;
-				}
-
-				if (i.toString().startsWith(s)) {
-					valid = newValid;
+		if (i != null) {
+			synchronized (filters) {
+				for (String s : filters) {
+					if (s != null) {
+						boolean newValid = true;
+						if (s.startsWith("!")) {
+							s = s.substring(1);
+							newValid = false;
+						}
+		
+						if (i.toString().startsWith(s)) {
+							valid = newValid;
+						}
+					}
 				}
 			}
 		}

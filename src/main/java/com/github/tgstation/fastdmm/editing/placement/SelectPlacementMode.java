@@ -339,9 +339,6 @@ public class SelectPlacementMode implements PlacementMode {
 					return;
 
 				synchronized(editor) {
-
-					
-					HashMap<Location, String[]> changes = new HashMap<Location, String[]>();
 					
 					for(Location l : selection.selection) {
 						String key = editor.dmm.map.get(l);
@@ -352,16 +349,17 @@ public class SelectPlacementMode implements PlacementMode {
 							continue;
 						
 						for (ObjInstance o : ti.objs) {
-							if (mt.typeString() != null) {
-								if (o.istype(mt.typeString())) {
-									ModifiedType m = ModifiedType.deriveFrom(o);
-									for (String var : model.editedVals.keySet()) {
-										m.vars.put(var, model.editedVals.get(var));
+							if (o != null) {
+								if (mt.typeString() != null) {
+									if (o.istype(mt.typeString())) {
+										ModifiedType m = ModifiedType.deriveFrom(o);
+										for (String var : model.editedVals.keySet()) {
+											m.vars.put(var, model.editedVals.get(var));
+											
+										}
+										String newKey = ti.replaceObject(o, m);
+										editor.dmm.putMap(l, newKey);
 									}
-									String newKey = ti.replaceObject(o, mt);
-									String[] keys = {key, newKey};
-									changes.put(l, keys);
-									editor.dmm.putMap(l, newKey);
 								}
 							}
 						}
