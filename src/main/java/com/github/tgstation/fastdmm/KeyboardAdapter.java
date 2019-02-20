@@ -66,4 +66,16 @@ public class KeyboardAdapter {
 	{
 		return !keyState.getOrDefault(keyCode, false) && prevKeyState.getOrDefault(keyCode,false);
 	}
+	
+	public static void setKey(int keyCode, boolean status) {
+		if (keyState.containsKey(keyCode))
+		{
+			keyState.replace(keyCode, status);
+		}
+		else
+		{
+			keyState.put(keyCode, status);
+		}
+	}
+	
 }

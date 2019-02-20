@@ -160,6 +160,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	public double dt = 0;
 
 	public static final void main(String[] args) throws IOException, LWJGLException {
+		
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException
@@ -511,9 +513,9 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			// For some reason, this doesn't work when the LWJGL Canvas is in
 			// focus.
 			KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(e -> {
-				isCtrlPressed = e.isControlDown();
-				isShiftPressed = e.isShiftDown();
-				isAltPressed = e.isAltDown();
+				KeyboardAdapter.setKey(Keyboard.KEY_LCONTROL, e.isControlDown());
+				KeyboardAdapter.setKey(Keyboard.KEY_LSHIFT, e.isShiftDown());
+				KeyboardAdapter.setKey(Keyboard.KEY_LMENU, e.isAltDown());
 				return false;
 			});
 		});
@@ -1080,9 +1082,6 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			}
 		
 		}
-		
-		
-		
 
 		if (dme != null) {
 			if (dmm != null) {
