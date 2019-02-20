@@ -512,10 +512,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			// Yes, there's a good reason input is being handled in 2 places:
 			// For some reason, this doesn't work when the LWJGL Canvas is in
 			// focus.
+			
 			KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(e -> {
-				KeyboardAdapter.setKey(Keyboard.KEY_LCONTROL, e.isControlDown());
-				KeyboardAdapter.setKey(Keyboard.KEY_LSHIFT, e.isShiftDown());
-				KeyboardAdapter.setKey(Keyboard.KEY_LMENU, e.isAltDown());
+				isCtrlPressed = e.isControlDown();
+				isAltPressed = e.isAltDown();
+				isShiftPressed = e.isShiftDown();
 				return false;
 			});
 		});
@@ -1082,6 +1083,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			}
 		
 		}
+		
+		System.out.println(isCtrlPressed + " " + isShiftPressed + " " + isAltPressed);
+		
+		
+		
 
 		if (dme != null) {
 			if (dmm != null) {

@@ -5,9 +5,6 @@
 
 package com.github.tgstation.fastdmm;
 
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 import org.lwjgl.input.Keyboard;
@@ -15,30 +12,20 @@ import org.lwjgl.input.Keyboard;
 
 
 public class KeyboardAdapter {
-	public static HashMap<Integer, Boolean> queuedKeyState = new HashMap<Integer, Boolean>();
 	public static HashMap<Integer, Boolean> keyState = new HashMap<Integer, Boolean>();
 	public static HashMap<Integer, Boolean> prevKeyState = new HashMap<Integer, Boolean>();
+	
+	public static boolean swingControl;
+	public static boolean swingShift;
+	public static boolean swingAlt;
 	
 	public static void updateKeys() {
 		prevKeyState = keyState;
 		
-		FastDMM fdmm = FastDMM.getFastDMM();
-		
-		
 		
 		keyState = (HashMap<Integer, Boolean>) keyState.clone();
 		while (Keyboard.next()) {
-			if (keyState.containsKey(Keyboard.getEventKey()))
-			{
-				if (Keyboard.getEventKeyState())
-					keyState.replace(Keyboard.getEventKey(), true);
-				else
-					keyState.replace(Keyboard.getEventKey(), false);
-			}
-			else
-			{
-				keyState.put(Keyboard.getEventKey(), true);
-			}
+			setKey(Keyboard.getEventKey(), Keyboard.getEventKeyState());
 		}
 		
 	}
