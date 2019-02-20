@@ -593,14 +593,14 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			}
 		} else if ("new".equals(e.getActionCommand())) {
 			String usePath = JOptionPane.showInputDialog(canvas,
-					"Please enter the path of the new DMM file relative to your DME: ", "FastDMM",
+					"Please enter the path of the new DMM file relative to your DME: ", "QDMM",
 					JOptionPane.QUESTION_MESSAGE);
 			String strMaxX = (String) JOptionPane.showInputDialog(canvas, "Select the X-size of your new map",
-					"FastDMM", JOptionPane.QUESTION_MESSAGE, null, null, "255");
+					"QDMM", JOptionPane.QUESTION_MESSAGE, null, null, "255");
 			String strMaxY = (String) JOptionPane.showInputDialog(canvas, "Select the Y-size of your new map",
-					"FastDMM", JOptionPane.QUESTION_MESSAGE, null, null, "255");
+					"QDMM", JOptionPane.QUESTION_MESSAGE, null, null, "255");
 			String strMaxZ = (String) JOptionPane.showInputDialog(canvas,
-					"Select the number of Z-levels of your new map", "FastDMM", JOptionPane.QUESTION_MESSAGE, null,
+					"Select the number of Z-levels of your new map", "QDMM", JOptionPane.QUESTION_MESSAGE, null,
 					null, "1");
 
 			if (usePath == null || usePath.isEmpty())
@@ -636,12 +636,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		} else if ("expand".equals(e.getActionCommand())) {
 			if (dmm == null)
 				return;
-			String strMaxX = (String) JOptionPane.showInputDialog(canvas, "Select the new X-size", "FastDMM",
+			String strMaxX = (String) JOptionPane.showInputDialog(canvas, "Select the new X-size", "QDMM",
 					JOptionPane.QUESTION_MESSAGE, null, null, "" + dmm.maxX);
-			String strMaxY = (String) JOptionPane.showInputDialog(canvas, "Select the new Y-size", "FastDMM",
+			String strMaxY = (String) JOptionPane.showInputDialog(canvas, "Select the new Y-size", "QDMM",
 					JOptionPane.QUESTION_MESSAGE, null, null, "" + dmm.maxY);
 			String strMaxZ = (String) JOptionPane.showInputDialog(canvas, "Select the new number of Z-levels",
-					"FastDMM", JOptionPane.QUESTION_MESSAGE, null, null, "" + dmm.maxZ);
+					"QDMM", JOptionPane.QUESTION_MESSAGE, null, null, "" + dmm.maxZ);
 
 			int maxX = 0;
 			int maxY = 0;
@@ -902,7 +902,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		// Display.setResizable(true);
 		Display.setParent(canvas);
 		Display.create();
-		this.setTitle("FastDMM");
+		this.setTitle("QDMM");
 
 		if (interface_dmi != null) {
 			interface_dmi.createGL();
@@ -1202,7 +1202,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private void loop() {
 		
 		// Set the clear color
-		glClearColor(0.25f, 0.25f, 0.5f, 1.0f);
+		glClearColor(0f, 0f, 0f, 1.0f);
 
 		int width;
 		int height;
