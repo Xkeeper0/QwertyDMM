@@ -24,7 +24,7 @@ public class EditVarsListener extends SimpleContextMenuListener {
 				return;
 		}
 		ModifiedType mt = ModifiedType.deriveFrom(oInstance);
-		if(!mt.viewVariables(editor))
+		if(!mt.viewVariables(editor).doReturnTrue)
 			return;
 
 		synchronized(editor) {

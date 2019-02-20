@@ -1083,11 +1083,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			}
 		
 		}
-		
-		System.out.println(isCtrlPressed + " " + isShiftPressed + " " + isAltPressed);
-		
-		
-		
+
 
 		if (dme != null) {
 			if (dmm != null) {

@@ -14,6 +14,7 @@ public class ModifiedTypeTableModel extends AbstractTableModel {
 	
 	private List<Object> displayedKeys = new ArrayList<>();
 	private List<Object> displayedVals = new ArrayList<>();
+	public Map<String,String> editedVals = new HashMap<String,String>();
 	
 	public boolean doReturnTrue = false;
 	
@@ -93,6 +94,7 @@ public class ModifiedTypeTableModel extends AbstractTableModel {
 		String key = displayedKeys.get(rowIndex).toString();
 		type.vars.put(key, value.toString());
 		displayedVals.set(rowIndex, new ModifiedTypeRenderer.BoldString(value.toString()));
+		editedVals.put(key, value.toString());
 	}
 	
 	@Override

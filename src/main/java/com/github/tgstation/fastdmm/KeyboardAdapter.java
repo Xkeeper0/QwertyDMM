@@ -14,11 +14,7 @@ import org.lwjgl.input.Keyboard;
 public class KeyboardAdapter {
 	public static HashMap<Integer, Boolean> keyState = new HashMap<Integer, Boolean>();
 	public static HashMap<Integer, Boolean> prevKeyState = new HashMap<Integer, Boolean>();
-	
-	public static boolean swingControl;
-	public static boolean swingShift;
-	public static boolean swingAlt;
-	
+
 	public static void updateKeys() {
 		prevKeyState = keyState;
 		

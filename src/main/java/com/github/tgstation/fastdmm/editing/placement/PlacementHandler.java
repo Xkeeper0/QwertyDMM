@@ -16,7 +16,6 @@ public interface PlacementHandler {
 	public void finalizePlacement();
 	// Called every frame when mouse button is pressed to 
 	public int visualize(Set<RenderInstance> rendInstanceSet, int currCreationIndex);
-	
 	// Called every time the mouse pixel moves
 	public void dragToPixel(int x, int y);
 }

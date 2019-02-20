@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JMenuItem;
@@ -16,6 +17,8 @@ import com.github.tgstation.fastdmm.dmirender.RenderInstance;
 import com.github.tgstation.fastdmm.dmmmap.Location;
 import com.github.tgstation.fastdmm.dmmmap.TileInstance;
 import com.github.tgstation.fastdmm.editing.FloatingSelection;
+import com.github.tgstation.fastdmm.editing.ui.ModifiedTypeTableModel;
+import com.github.tgstation.fastdmm.objtree.ModifiedType;
 import com.github.tgstation.fastdmm.objtree.ObjInstance;
 
 public class SelectPlacementMode implements PlacementMode {
@@ -133,6 +136,9 @@ public class SelectPlacementMode implements PlacementMode {
 			item = new JMenuItem("Cut Selection");
 			item.addActionListener(new SelectPlacementMode.SelectListener(editor, this, true, true));
 			menu.add(item);
+			item = new JMenuItem("Edit Vars");
+			item.addActionListener(new SelectPlacementMode.EditVarsInSelectionListener(editor, this));
+			menu.add(item);	
 		}
 		if(floatSelect != null && mapLocation.x >= floatSelect.x && mapLocation.x >= floatSelect.x && 
 			mapLocation.x < (floatSelect.x+floatSelect.width) && mapLocation.y < (floatSelect.y+floatSelect.height)) {
@@ -149,6 +155,9 @@ public class SelectPlacementMode implements PlacementMode {
 			item = new JMenuItem("Cut Selection");
 			item.addActionListener(new SelectPlacementMode.FloatingSelectionListener(editor, this, true, true));
 			menu.add(item);
+			item = new JMenuItem("Edit Vars");
+			item.addActionListener(new SelectPlacementMode.EditVarsInSelectionListener(editor, this));
+			menu.add(item);	
 		}
 		JMenuItem item = new JMenuItem("Paste");
 		item.addActionListener(new SelectPlacementMode.PasteListener(editor, this, mapLocation));
@@ -299,6 +308,69 @@ public class SelectPlacementMode implements PlacementMode {
 					editor.addToUndoStack(editor.dmm.popDiffs());
 				}
 			
+		}
+	}
+	
+	
+	
+	public static class EditVarsInSelectionListener implements ActionListener {
+		FastDMM editor;
+		SelectPlacementMode selection;
+		Location mapLocation;
+		ObjInstance oInstance;
+		
+		public EditVarsInSelectionListener(FastDMM editor, SelectPlacementMode selection) {
+			this.editor = editor;
+			this.selection = selection;
+			this.oInstance = editor.selectedInstance;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if (oInstance != null) {
+				
+				ModifiedType mt = ModifiedType.deriveFrom(oInstance);
+				
+				
+				ModifiedTypeTableModel model = mt.viewVariables(editor);
+			
+				if(!model.doReturnTrue)
+					return;
+
+				synchronized(editor) {
+
+					
+					HashMap<Location, String[]> changes = new HashMap<Location, String[]>();
+					
+					for(Location l : selection.selection) {
+						String key = editor.dmm.map.get(l);
+						if(key == null)
+							continue;
+						TileInstance ti = editor.dmm.instances.get(key);
+						if(ti == null)
+							continue;
+						
+						for (ObjInstance o : ti.objs) {
+							if (mt.typeString() != null) {
+								if (o.istype(mt.typeString())) {
+									ModifiedType m = ModifiedType.deriveFrom(o);
+									for (String var : model.editedVals.keySet()) {
+										m.vars.put(var, model.editedVals.get(var));
+									}
+									String newKey = ti.replaceObject(o, mt);
+									String[] keys = {key, newKey};
+									changes.put(l, keys);
+									editor.dmm.putMap(l, newKey);
+								}
+							}
+						}
+					}
+					
+					editor.addToUndoStack(editor.dmm.popDiffs());
+				
+				}
+			}
 		}
 	}
 }

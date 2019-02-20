@@ -150,9 +150,8 @@ public class ModifiedType extends ObjInstance {
 		return false;
 	}
 	
-	public boolean viewVariables(FastDMM editor) {
+	public ModifiedTypeTableModel viewVariables(FastDMM editor) {
 		final JDialog dialog = new JDialog(editor, "View Variables", true);
-		;
 		
 		final ModifiedTypeTableModel model = new ModifiedTypeTableModel(this);
 		JTable table = new JTable(model);
@@ -197,7 +196,7 @@ public class ModifiedType extends ObjInstance {
 		dialog.setPreferredSize(dialog.getSize());
 		dialog.setVisible(true);
 		
-		return model.doReturnTrue;
+		return model;
 	}
 	
 	public void editIconState(FastDMM editor) {
