@@ -37,6 +37,7 @@ import com.github.tgstation.fastdmm.editing.placement.PlacementMode;
 import com.github.tgstation.fastdmm.editing.placement.SelectPlacementMode;
 import com.github.tgstation.fastdmm.editing.ui.EditorTabComponent;
 import com.github.tgstation.fastdmm.editing.ui.EmptyTabPanel;
+import com.github.tgstation.fastdmm.editing.ui.IconStateListRenderer;
 import com.github.tgstation.fastdmm.editing.ui.NoDmeTreeModel;
 import com.github.tgstation.fastdmm.editing.ui.ObjectTreeRenderer;
 import com.github.tgstation.fastdmm.gui.model.FastDMMOptionsModel;
@@ -129,6 +130,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JMenu mapMenu;
 	private JMenu modeMenu;
 	private JMenu optionsMenu;
+	private JMenu helpMenu;
 	
 	private JPopupMenu currPopup;
 	
@@ -158,6 +160,8 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	public double currentFrame = 0;
 	public double lastNanoTime = 0;
 	public double dt = 0;
+	
+	private String helpKeybindsText = Util.fileToString("helpKeybinds.txt");
 
 	public static final void main(String[] args) throws IOException, LWJGLException {
 		
@@ -500,7 +504,17 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemConsoleVisible.setSelected(options.consoleVisible);
 			optionsMenu.add(menuItemConsoleVisible);
 			
+			
+			helpMenu = new JMenu("Help");
+			helpMenu.setMnemonic(KeyEvent.VK_H);
+			menuBar.add(helpMenu);
 
+			menuItemChangeFilters = new JMenuItem("Keybinds", KeyEvent.VK_K);
+			menuItemChangeFilters.setActionCommand("helpKeybinds");
+			menuItemChangeFilters.addActionListener(FastDMM.this);
+			helpMenu.add(menuItemChangeFilters);
+			
+			
 			setJMenuBar(menuBar);
 
 			filters = new TreeSet<>(new FilterComparator());
@@ -691,6 +705,35 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemSelect.doClick();
 		} else if ("modeDelete".equals(e.getActionCommand())) {
 			menuItemDelete.doClick();
+		} else if ("helpKeybinds".equals(e.getActionCommand())) {
+			final JDialog dialog = new JDialog(getFastDMM(), "Help: Keybinds", true);
+
+			JPanel bottomPanel = new JPanel(new BorderLayout());
+			
+			
+			
+			JLabel textLabel = new JLabel(helpKeybindsText);
+			JPanel textPane = new JPanel();
+			textPane.add(textLabel, BorderLayout.WEST);
+			
+			
+			
+			dialog.getContentPane().add(textPane, BorderLayout.NORTH);
+			dialog.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+			
+			JButton okButton = new JButton("OK");
+			
+			okButton.addActionListener(evt -> {
+	            dialog.setVisible(false);
+	            dialog.dispose(); 
+	        });
+			
+			bottomPanel.add(okButton, BorderLayout.EAST);
+
+			dialog.setLocationRelativeTo(getFastDMM());
+			dialog.setSize(350, 635);
+			dialog.setPreferredSize(dialog.getSize());
+			dialog.setVisible(true);
 		}
 	}
 
@@ -983,10 +1026,12 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 		float dwheel = Mouse.getDWheel();
 		if (dwheel != 0) {
-			if (dwheel > 0)
+			if (dwheel > 0) {
 				viewportZoom *= 2;
-			else if (dwheel < 0)
+			}
+			else if (dwheel < 0) {
 				viewportZoom /= 2;
+			}
 			if (viewportZoom < 4)
 				viewportZoom = 4;
 			if (viewportZoom > 256)
@@ -1000,6 +1045,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		boolean copy = KeyboardAdapter.isKeyPressed(Keyboard.KEY_C);
 		boolean cut = KeyboardAdapter.isKeyPressed(Keyboard.KEY_X);
 		boolean paste = KeyboardAdapter.isKeyPressed(Keyboard.KEY_V);
+		boolean redo = KeyboardAdapter.isKeyPressed(Keyboard.KEY_Y);
 		
 		boolean keyA = KeyboardAdapter.isKeyPressed(Keyboard.KEY_A);
 		boolean keyS = KeyboardAdapter.isKeyPressed(Keyboard.KEY_S);
@@ -1011,7 +1057,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				|| KeyboardAdapter.isKeyDown(Keyboard.KEY_RSHIFT);
 		isAltPressed = KeyboardAdapter.isKeyDown(Keyboard.KEY_LMENU) || KeyboardAdapter.isKeyDown(Keyboard.KEY_RMENU);
 
-		if (undo && isCtrlPressed && isShiftPressed) {
+		if ((undo && isCtrlPressed && isShiftPressed) || (redo && isCtrlPressed)) {
 			ActionEvent ae = new ActionEvent(this, 1, "redo");
 			actionPerformed(ae);
 		} else if (undo && isCtrlPressed) {

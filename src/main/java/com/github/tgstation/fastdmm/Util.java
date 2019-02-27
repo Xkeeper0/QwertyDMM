@@ -1,10 +1,14 @@
 package com.github.tgstation.fastdmm;
 
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -49,6 +53,30 @@ public class Util {
      */
     public static InputStream getFile(String path) {
         return FastDMM.class.getClassLoader().getResourceAsStream(path);
+    }
+    
+    public static String fileToString(String path) {
+    	InputStream is = FastDMM.class.getClassLoader().getResourceAsStream(path);
+    	
+    	BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+    	
+    	String line = null;
+		try {
+			line = buf.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	StringBuilder sb = new StringBuilder();
+    	while(line != null){
+    		sb.append(line).append("\n"); try {
+				line = buf.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	} 
+    	
+    	return sb.toString();
+
     }
 
     /**

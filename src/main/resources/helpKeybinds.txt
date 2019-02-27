@@ -1,0 +1,39 @@
+<html>
+<b><h2>Standard Keybinds</h2></b><br/>
+<p>
+<b>CTRL+S:</b> Save<br/>
+<b>CTRL+Z:</b> Undo<br/>
+<b>CTRL+SHIFT+Z:</b> Redo<br/>
+<b>CTRL+Y:</b> Redo
+</p><br/><br/>
+
+<b><h2>Movement Keybinds</h2></b><br/>
+<p>
+<b>Arrow Keys:</b> Pan<br/>
+<b>SHIFT+Arrow Keys:</b> Pan Pages<br/>
+<b>ALT+CLICK+DRAG:</b> Pan<br/>
+<b>MMB+DRAG:</b> Pan<br/>
+<b>Mouse Wheel:</b> Zoom
+</p><br/><br/>
+
+
+<b><h2>Mode Keybinds</h2></b><br/>
+<p>
+<b>SHIFT+A:</b> Placement Mode<br/>
+<b>SHIFT+S:</b> Select Mode<br/>
+<b>SHIFT+D:</b> Delete Mode
+</p><br/>
+
+<b><h3>Placement Mode</h3></b><br/>
+<p>
+<b>SHIFT+CLICK+DRAG:</b> Block Placement Mode<br/>
+<b>CTRL+CLICK+DRAG:</b> Directional Placement Mode<br/>
+<b>CTRL+SHIFT+CLICK+DRAG:</b> Pixel Placement Mode
+</p><br/>
+
+<b><h3>Delete Mode</h3></b><br/>
+<p>
+<b>SHIFT+CLICK+DRAG:</b> Block Deletion<br/>
+</p><br/>
+
+</html>
