@@ -1034,19 +1034,29 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 		if ((prevRelMouseX != relMouseX || prevRelMouseY != relMouseY) && currPlacementHandler != null) {
 			currPlacementHandler.dragToPixel(relMouseX, relMouseY);
 		}
-
+		
 		float dwheel = Mouse.getDWheel();
 		if (dwheel != 0) {
 			if (dwheel > 0) {
-				viewportZoom *= 2;
+				if (!(viewportZoom >= 256)) {
+					viewportZoom *= 2;
+					viewportX = viewportX + (((xpos - Display.getWidth()/2))/viewportZoom);
+					viewportY = viewportY - (((ypos - Display.getHeight()/2))/viewportZoom);
+				} else {
+					viewportZoom = 256;
+				}
+				
 			}
 			else if (dwheel < 0) {
-				viewportZoom /= 2;
+				if(!(viewportZoom<=4)) {
+					viewportX = viewportX - (((xpos - Display.getWidth()/2))/viewportZoom);
+					viewportY = viewportY + (((ypos - Display.getHeight()/2))/viewportZoom);
+					viewportZoom /= 2;
+				} else {
+					viewportZoom = 4;
+				}
 			}
-			if (viewportZoom < 4)
-				viewportZoom = 4;
-			if (viewportZoom > 256)
-				viewportZoom = 256;
+				
 		}
 
 		KeyboardAdapter.updateKeys();
