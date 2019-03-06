@@ -7,8 +7,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -57,6 +59,8 @@ import org.lwjgl.opengl.*;
 import org.json.*;
 
 import static org.lwjgl.opengl.GL11.*;
+
+import club.minnced.discord.rpc.*;
 
 public class FastDMM extends JFrame implements ActionListener, TreeSelectionListener, ListSelectionListener {
 	private static final long serialVersionUID = 1L;
@@ -164,6 +168,10 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private String helpKeybindsText = Util.fileToString("helpKeybinds.txt");
 
 	public static final void main(String[] args) throws IOException, LWJGLException {
+		
+		//discord rich presence
+		
+		RichPresence.start();
 		
 		
 		try {
@@ -523,6 +531,9 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			filters.add("/mob");
 			filters.add("/area");
 
+			//App icon
+			try{setIconImage(ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream("qdmmsmall.png")));} catch(Exception e){}
+			
 			// Yes, there's a good reason input is being handled in 2 places:
 			// For some reason, this doesn't work when the LWJGL Canvas is in
 			// focus.
@@ -580,7 +591,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 						filters.add(filter);
 					}
 				}
-				
+
 			}
 		} else if ("open_dme".equals(e.getActionCommand())) {
 			openDME();
