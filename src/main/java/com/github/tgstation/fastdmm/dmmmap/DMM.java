@@ -30,6 +30,8 @@ public class DMM {
 	int parenthesesDepth = 0;
 	int[] arrayDepth = new int[50];
 	
+	final int maxKey = 65534;
+	
 	public FastDMM editor;
 	
 	public int minX = 1;
@@ -60,14 +62,13 @@ public class DMM {
 		this.file = file;
 		this.editor = editor;
 		this.objTree = objTree;
-		
+
 		Path pathAbsolute = Paths.get(file.getAbsolutePath());
         Path pathBase = Paths.get(new File(objTree.dmePath).getParent());
         Path pathRelative = pathBase.relativize(pathAbsolute);
         relPath = pathRelative.toString();
 		
 		if(!file.exists()) {
-			
 			Set<String> unusedKeysSet = new TreeSet<>();
 			generateKeys(keyLen, "", unusedKeysSet);
 			unusedKeys = new ArrayList<>(unusedKeysSet);
@@ -82,7 +83,6 @@ public class DMM {
 		Set<String> unusedKeysSet = new HashSet<>();
 		
 		Map<String, String> substitutions = new TreeMap<>();
-		
 		while ((line = br.readLine()) != null) {
 			line = line.trim();
 			if(Pattern.matches("//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE", line))
@@ -302,7 +302,7 @@ public class DMM {
 	}
 	
 	public void generateKeys(int length, String prefix, Set<String> set) {
-		if(length <= 0) {
+		if(length <= 0 || set.size() > maxKey) {
 			set.add(prefix);
 			return;
 		}

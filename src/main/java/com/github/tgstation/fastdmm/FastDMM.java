@@ -887,8 +887,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				}
 				
 				addToRecent(dme, dmm);
-				this.setTitle(dme.getName().replaceFirst("[.][^.]+$", "") + ": "
-						+ dmm.file.getName().replaceFirst("[.][^.]+$", ""));
+				this.setTitle(dme.getName().replaceFirst("[.][^.]+$", "") + ": " + dmm.file.getName().replaceFirst("[.][^.]+$", ""));
 				initRecent("both");
 			}
 		}
