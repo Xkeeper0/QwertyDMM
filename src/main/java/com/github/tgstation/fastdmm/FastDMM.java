@@ -1225,7 +1225,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			return;
 
 		while (Mouse.next()) {
-			if (isAltPressed)
+			if (isAltPressed && !isCtrlPressed)
 				continue;
 			if (Mouse.getEventButtonState()) {
 				if (currPopup != null && !currPopup.isVisible())
