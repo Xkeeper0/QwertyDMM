@@ -14,8 +14,11 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+
+
 
 public class ObjectTree implements TreeModel {
 	public static String macroRegex = "([\\d\\.]+)[ \\t]*(\\+|\\-)[ \\t]*([\\d\\.]+)";
@@ -26,6 +29,7 @@ public class ObjectTree implements TreeModel {
 	// Linked list because it only really gets used for iteration and I'm too lazy to estimate the directory count
 	// So it doesn't reallocate the array a billion times.
 	public LinkedList<Path> fileDirs = new LinkedList<>();
+	public ObjectTreeItem atom;
 
 	public int icon_size;
 
@@ -38,7 +42,7 @@ public class ObjectTree implements TreeModel {
 		datum.setVar("tag","null");
 		addItem(datum);
 		
-		ObjectTreeItem atom = new ObjectTreeItem(datum, "/atom");
+		atom = new ObjectTreeItem(datum, "/atom");
 		atom.setVar("alpha", "255");
 		atom.setVar("appearance_flags", "0");
 		atom.setVar("blend_mode", "0");
@@ -278,7 +282,7 @@ public class ObjectTree implements TreeModel {
 			}
 		} else if (arg0 instanceof ObjectTreeItem) {
 			ObjectTreeItem item = (ObjectTreeItem)arg0;
-			return item.subtypes.get(arg1);
+			return item.getVisibleSubtypes().get(arg1);
 		}
 		return null;
 	}
@@ -288,7 +292,7 @@ public class ObjectTree implements TreeModel {
 		if(arg0 == this)
 			return 4;
 		if(arg0 instanceof ObjectTreeItem) {
-			return ((ObjectTreeItem)arg0).subtypes.size();
+			return ((ObjectTreeItem)arg0).getVisibleSubtypes().size();
 		}
 		return 0;
 	}
@@ -311,12 +315,12 @@ public class ObjectTree implements TreeModel {
 			}
 		}
 		if(arg0 instanceof ObjectTreeItem)
-			return ((ObjectTreeItem)arg0).subtypes.indexOf(arg1);
+			return ((ObjectTreeItem)arg0).getVisibleSubtypes().indexOf(arg1);
 		return 0;
 	}
 
 	@Override
-	public Object getRoot() {
+	public ObjectTree getRoot() {
 		return this;
 	}
 
@@ -325,7 +329,7 @@ public class ObjectTree implements TreeModel {
 		if(arg0 == this)
 			return false;
 		if(arg0 instanceof ObjectTreeItem)
-			return ((ObjectTreeItem)arg0).subtypes.size() == 0;
+			return ((ObjectTreeItem)arg0).getVisibleSubtypes().size() == 0;
 		return true;
 	}
 
@@ -341,6 +345,24 @@ public class ObjectTree implements TreeModel {
 	
 	public String toString() {
 		return dmePath;
+	}
+	
+	public TreePath getPath(ObjectTreeItem item) {
+		ArrayList<String> stringListPath = new ArrayList<String>();
+		
+		
+		
+		while (true) {
+			if (item.parent == null || item.path == "/obj" || item.path == "/turf" || item.path == "/mob" || item.path == "/area") {
+				break;
+			}
+			item = item.parent;
+			stringListPath.add(0, item.path);
+		}
+		
+		stringListPath.add(0, dmePath);
+		
+		return new TreePath(stringListPath.toArray(new String[stringListPath.size()]));
 	}
 
 	/**
@@ -362,4 +384,7 @@ public class ObjectTree implements TreeModel {
 		}
 		throw new FileNotFoundException();
 	}
+	
 }
+
+

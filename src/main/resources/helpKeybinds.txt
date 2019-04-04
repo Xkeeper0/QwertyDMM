@@ -19,15 +19,15 @@
 
 <b><h2>Mode Keybinds</h2></b><br/>
 <p>
-<b>SHIFT+A:</b> Placement Mode<br/>
-<b>SHIFT+S:</b> Select Mode<br/>
-<b>SHIFT+D:</b> Delete Mode
+<b>CTRL+1:</b> Placement Mode<br/>
+<b>CTRL+2:</b> Select Mode<br/>
+<b>CTRL+3:</b> Delete Mode
 </p><br/>
 
 <b><h3>Placement Mode</h3></b><br/>
 <p>
 <b>SHIFT+CLICK+DRAG:</b> Block Placement Mode<br/>
-<b>CTRL+CLICK+DRAG:</b> Directional Placement Mode<br/>
+<b>CTRL+ALT+CLICK+DRAG:</b> Directional Placement Mode<br/>
 <b>CTRL+SHIFT+CLICK+DRAG:</b> Pixel Placement Mode
 </p><br/>
 

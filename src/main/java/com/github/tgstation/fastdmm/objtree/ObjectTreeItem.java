@@ -12,11 +12,16 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 public class ObjectTreeItem extends ObjInstance implements ListModel<ObjInstance> {
+	
+	public boolean visible = true;
+	
 	public ObjectTreeItem(ObjectTreeItem parent, String path)
 	{
 		path = path.trim();
 		this.path = path;
 		this.parent = parent;
+		
+		
 		vars.put("type", path);
 		if(parent != null)
 		{
@@ -148,6 +153,20 @@ public class ObjectTreeItem extends ObjInstance implements ListModel<ObjInstance
 	@Override
 	public void removeListDataListener(ListDataListener arg0) {
 		listeners.remove(arg0);
+	}
+	
+	public int getChildCount() {
+		return subtypes.size();
+	}
+	
+	public ArrayList<ObjectTreeItem> getVisibleSubtypes() {
+		ArrayList<ObjectTreeItem> visibleSubtypes = new ArrayList<ObjectTreeItem>();
+		for (ObjectTreeItem st : subtypes) {
+			if (st.visible) {
+				visibleSubtypes.add(st);
+			}
+		}
+		return visibleSubtypes;
 	}
 
 }

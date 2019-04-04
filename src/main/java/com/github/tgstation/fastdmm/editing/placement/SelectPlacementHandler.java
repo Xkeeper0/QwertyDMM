@@ -28,7 +28,7 @@ public class SelectPlacementHandler implements PlacementHandler {
 		startLocation = endLocation = initialLocation;
 		placementMode = (SelectPlacementMode)editor.placementMode;
 		
-		if(editor.isCtrlPressed)
+		if(editor.isAltPressed)
 			selectMode = SELECT_MODE_SUBTRACT;
 		else if(editor.isShiftPressed)
 			selectMode = SELECT_MODE_ADD;

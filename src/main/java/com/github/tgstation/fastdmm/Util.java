@@ -4,26 +4,30 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.github.tgstation.fastdmm.dmirender.RenderInstance;
 import com.github.tgstation.fastdmm.dmmmap.Location;
+import com.github.tgstation.fastdmm.objtree.ObjectTreeItem;
 
 /**
  * This class contains various utilities.
@@ -357,5 +361,32 @@ public class Util {
 
         return tf;
     }
+    
+	static boolean filterTree(ObjectTreeItem currentRoot, String filter) {
+		int c = currentRoot.getChildCount();
 
+		boolean matches = currentRoot.path.toLowerCase().contains(filter.toLowerCase()) || (currentRoot.getVar("name") != null && currentRoot.getVar("name").toLowerCase().contains(filter.toLowerCase()));
+		// pls no bulli waka
+		for (int i = 0; i < c; i++) {
+			ObjectTreeItem n = currentRoot.subtypes.get(i);
+			boolean f = filterTree(n, filter);
+			if (f) {
+				matches = true;
+			}
+		}
+		
+		currentRoot.visible = matches;
+
+		return matches ? true : false;
+	}
+	
+	
+	static void setAllVisible(ObjectTreeItem currentRoot) {
+		int c = currentRoot.getChildCount();
+		currentRoot.visible = true;
+		for (int i = 0; i < c; i++) {
+			ObjectTreeItem n = currentRoot.subtypes.get(i);
+			setAllVisible(n);
+		}
+	}
 }

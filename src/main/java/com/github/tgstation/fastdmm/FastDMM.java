@@ -17,11 +17,14 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import com.github.tgstation.fastdmm.Util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import com.github.tgstation.fastdmm.constant.constants;
 import com.github.tgstation.fastdmm.dmirender.DMI;
@@ -60,7 +63,8 @@ import org.json.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import club.minnced.discord.rpc.*;
+
+import javax.swing.tree.TreePath;
 
 public class FastDMM extends JFrame implements ActionListener, TreeSelectionListener, ListSelectionListener {
 	private static final long serialVersionUID = 1L;
@@ -134,6 +138,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 	private JMenu mapMenu;
 	private JMenu modeMenu;
 	private JMenu optionsMenu;
+	private JMenu pluginsMenu;
 	private JMenu helpMenu;
 	
 	private JPopupMenu currPopup;
@@ -185,7 +190,19 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 
 		fastdmm.initSwing();
 		fastdmm.interface_dmi = new DMI(Util.getFile("interface.dmi"));
+		/*
+	    PluginManager pluginManager = new DefaultPluginManager() {
+            protected ExtensionFinder createExtensionFinder() {
+                DefaultExtensionFinder extensionFinder = (DefaultExtensionFinder) super.createExtensionFinder();
+                extensionFinder.addServiceProviderExtensionFinder();
 
+                return extensionFinder;
+            }
+	    };
+	    
+	    pluginManager.loadPlugins();
+	    pluginManager.startPlugins();
+		*/
 		try {
 			fastdmm.init();
 			fastdmm.loop();
@@ -261,16 +278,55 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			objTreePanel.setLayout(new BorderLayout());
 
 			
-			//objTreeFilter = new JTextField(); 
-			//objTreePanel.add(objTreeFilter, BorderLayout.NORTH);
+			objTreeFilter = new JTextField(); 
+			objTreePanel.add(objTreeFilter, BorderLayout.NORTH);
 			
 			
 			objTreeVis = new JTree(new NoDmeTreeModel());
 			objTreeVis.addTreeSelectionListener(FastDMM.this);
 			ToolTipManager.sharedInstance().registerComponent(objTreeVis);
-			//new QuickTreeFilterField()
+
 			objTreeVis.setCellRenderer(new ObjectTreeRenderer(FastDMM.this));
 			objTreePanel.add(new JScrollPane(objTreeVis));
+
+			
+			objTreeFilter.getDocument().addDocumentListener(new DocumentListener() {
+
+				public void filter() { //ya killin me waka
+					if (dme != null) {
+						String f = objTreeFilter.getText().trim();
+						
+						ObjectTreeItem currentRoot = ((ObjectTree) objTreeVis.getModel()).atom;
+	
+						if (f.length() >= 2) {
+							Util.filterTree(currentRoot, f);
+							objTreeVis.setModel(null);
+							objTreeVis.setModel(objTree);
+							
+							for (int i = 0; i < objTreeVis.getRowCount(); i++) {
+								objTreeVis.expandRow(i);
+							}
+	
+						} else {
+							Util.setAllVisible(currentRoot);
+							for (int i = 1; i < objTreeVis.getRowCount(); i++) { //start at 1 so we dont collapse turf mob area obj
+								objTreeVis.collapseRow(i);
+							}
+						}
+						objTreeVis.repaint();
+					}
+				}
+				
+				@Override
+				public void changedUpdate(DocumentEvent e) {filter();}
+				@Override
+				public void insertUpdate(DocumentEvent e) {filter();}
+				@Override
+				public void removeUpdate(DocumentEvent e) {filter();}
+			});
+			
+			
+			
 
 			leftTabs = new JTabbedPane();
 			leftTabs.addTab("Objects", objTreePanel);
@@ -438,7 +494,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemPlace.addActionListener(new PlacementModeListener(this, new PlacePlacementMode()));
 			placementGroup.add(menuItemPlace);
 			
-			KeyStroke menuItemPlaceKey = KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.SHIFT_DOWN_MASK);
+			KeyStroke menuItemPlaceKey = KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK);
 			menuItemPlace.setAccelerator(menuItemPlaceKey);
 
 			modeMenu.add(menuItemPlace);
@@ -453,7 +509,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			placementGroup.add(menuItemSelect);
 			
 
-			KeyStroke menuItemSelectKey = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK);
+			KeyStroke menuItemSelectKey = KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK);
 			menuItemSelect.setAccelerator(menuItemSelectKey);
 			
 			modeMenu.add(menuItemSelect);
@@ -467,7 +523,7 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemDelete.addActionListener(new PlacementModeListener(this, new DeletePlacementMode()));
 			placementGroup.add(menuItemDelete);
 
-			KeyStroke menuItemDeleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK);
+			KeyStroke menuItemDeleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.CTRL_DOWN_MASK);
 			menuItemDelete.setAccelerator(menuItemDeleteKey);
 			
 
@@ -511,6 +567,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			menuItemConsoleVisible.addActionListener(FastDMM.this);
 			menuItemConsoleVisible.setSelected(options.consoleVisible);
 			optionsMenu.add(menuItemConsoleVisible);
+			
+			
+			pluginsMenu = new JMenu("Plugins");
+			pluginsMenu.setMnemonic(KeyEvent.VK_P);
+			menuBar.add(pluginsMenu);
 			
 			
 			helpMenu = new JMenu("Help");
@@ -1089,24 +1150,18 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 			
 		} else if (cut && isCtrlPressed) {
 			
-		} else if (keyA && isShiftPressed) {
-			
+		} else if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_1) && isCtrlPressed) {
 			ActionEvent ae = new ActionEvent(this, 1, "modePlace");
 			actionPerformed(ae);		
-			
-		} else if (keyS && isShiftPressed) {
-			
+		} else if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_2) && isCtrlPressed) {
 			ActionEvent ae = new ActionEvent(this, 1, "modeSelect");
 			actionPerformed(ae);	
-			
-		} else if (keyD && isShiftPressed) {
-			
+		} else if (KeyboardAdapter.isKeyPressed(Keyboard.KEY_3) && isCtrlPressed) {
 			ActionEvent ae = new ActionEvent(this, 1, "modeDelete");
 			actionPerformed(ae);	
-			
 		}
 
-		if (Mouse.isButtonDown(2) || (Mouse.isButtonDown(0) && isAltPressed)) {
+		if (Mouse.isButtonDown(2) || (Mouse.isButtonDown(0) && isAltPressed && !isShiftPressed &&!isCtrlPressed)) {
 			viewportX -= (dx / viewportZoom);
 			viewportY += (dy / viewportZoom);
 		}
@@ -1176,7 +1231,11 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 				if (currPopup != null && !currPopup.isVisible())
 					currPopup = null;
 				if (currPopup != null) {
+					try {
 					currPopup.setVisible(false);
+					} catch (Exception e) {
+						e.printStackTrace(System.out); // for some reason I keep gettin an array index out of bounds error here
+					}
 					currPopup = null;
 					continue;
 				}
