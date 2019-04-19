@@ -302,18 +302,21 @@ public class FastDMM extends JFrame implements ActionListener, TreeSelectionList
 							Util.filterTree(currentRoot, f);
 							objTreeVis.setModel(null);
 							objTreeVis.setModel(objTree);
-							
+
 							for (int i = 0; i < objTreeVis.getRowCount(); i++) {
 								objTreeVis.expandRow(i);
 							}
 	
 						} else {
 							Util.setAllVisible(currentRoot);
+							objTreeVis.setModel(null);
+							objTreeVis.setModel(objTree);
+
 							for (int i = 1; i < objTreeVis.getRowCount(); i++) { //start at 1 so we dont collapse turf mob area obj
 								objTreeVis.collapseRow(i);
 							}
 						}
-						objTreeVis.repaint();
+						objTreeVis.validate();
 					}
 				}
 				
