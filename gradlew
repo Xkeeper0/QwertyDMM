@@ -6,8 +6,6 @@
 ##
 ##############################################################################
 
-org.gradle.java.home=C:\\Program Files\\Java\\jdk1.8.0_144
-
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 DEFAULT_JVM_OPTS=""
 
